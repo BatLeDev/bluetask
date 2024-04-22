@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+
+    - name: Deploy
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.RPI_HOST }}
+        username: batrpi
+        password: ${{ secrets.RPI_PWD }}
+        port: ${{ secrets.RPI_PORT }}
+        source: "dist/*"
+        target: "/home/batrpi/bluetask/webapp/"
