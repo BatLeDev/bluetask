@@ -7,10 +7,10 @@
       >
         <strong>Baptiste GUERNY</strong>
       </a> — <a
-        href="https://matthieu495.gitlab.io/r4.a.10/section/tp3/"
+        href="https://matthieu495.gitlab.io/r4.a.10/section/tp4/"
         class="link"
       >
-        R4.A.10 - Complément Web - TP3
+        R4.A.10 - Complément Web - TP4
       </a>
     </div>
   </v-footer>

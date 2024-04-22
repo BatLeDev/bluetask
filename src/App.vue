@@ -25,7 +25,7 @@
     --v-medium-emphasis-opacity: 1 !important;
   }
 
-  /* Remove scroll-bar */
+  /* Remove unnecessary scrollbar */
   html {
     overflow-y: auto
   }
