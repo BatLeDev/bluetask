@@ -13,7 +13,9 @@ Objectif :
 -> et enfin faire le design de la gestion des taches (ajout, suppression, modification, etc)
 
 -> Design fortement inspiré de https://www.figma.com/community/file/1336799126437101680
-
+https://storyset.com/illustration/mental-health/cuate
+https://storyset.com/illustration/on-the-office/amico#BA68C8FF&hide=&hide=false
+<a href="https://storyset.com/work">Work illustrations by Storyset</a>
 
 --> TODO
 Use Poppins font

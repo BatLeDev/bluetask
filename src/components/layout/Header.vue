@@ -2,7 +2,7 @@
   <v-app-bar color="primary">
 
     <v-img
-      class="mx-2"
+      class="ml-8"
       src="@/assets/logo.png"
       draggable="false"
       max-width="50"
@@ -11,18 +11,45 @@
     />
     <v-app-bar-title
       text="BlueTask"
+      class="text-lg-h5 font-weight-bold ml-2"
       style="user-select: none;"
       @click="$router.push('/')"
     />
 
     <v-btn
-      icon
-      href="/login"
+      v-if="!isLogged && !showSignUp"
+      append-icon="mdi-login"
+      variant="elevated"
+      color="accent"
+      rounded="lg"
+      href="/authentication/login"
     >
       Login
+    </v-btn>
+    <v-btn
+      v-if="!isLogged && showSignUp"
+      append-icon="mdi-account-plus"
+      variant="elevated"
+      color="accent"
+      rounded="lg"
+      href="/authentication/register"
+    >
+      Sign Up
     </v-btn>
   </v-app-bar>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+defineProps({
+  isLogged: {
+    type: Boolean,
+    default: false
+  },
+  showSignUp: {
+    type: Boolean,
+    default: false
+  }
+})
 </script>
