@@ -36,20 +36,47 @@
     >
       Sign Up
     </v-btn>
+    <v-btn
+      v-if="isLogged"
+      append-icon="mdi-logout"
+      variant="elevated"
+      color="accent"
+      rounded="lg"
+      @click="logout"
+    >
+      Logout
+    </v-btn>
   </v-app-bar>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+
+let auth
+const router = useRouter()
+const isLogged = ref(false)
 
 defineProps({
-  isLogged: {
-    type: Boolean,
-    default: false
-  },
   showSignUp: {
     type: Boolean,
     default: false
   }
 })
+
+onMounted(() => {
+  auth = getAuth()
+  onAuthStateChanged(auth, (user) => {
+    isLogged.value = user ? true : false
+  })
+})
+
+const logout = () => {
+  signOut(auth)
+    .then(() => {
+      router.push('/')
+    })
+}
+
 </script>
