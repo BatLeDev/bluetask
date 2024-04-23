@@ -28,15 +28,6 @@ const email = ref('')
 const password = ref('')
 const errMsg = ref()
 
-onMounted(() => {
-  getRedirectResult(getAuth())
-    .then((result) => {
-      if (result.user) {
-        router.push('/dashboard')
-      }
-    })
-})
-
 const login = () => {
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then((data) => {
@@ -55,7 +46,7 @@ const login = () => {
           errMsg.value = 'Wrong password'
           break
         case 'auth/invalid-credential':
-          errMsg.value = 'Yoy are maybe trying to sign in with Google. Please use the Google button below.'
+          errMsg.value = 'Invalid email or password'
           break
         default:
           errMsg.value = error.message
