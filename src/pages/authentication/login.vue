@@ -19,8 +19,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signInWithEmailAndPassword } from 'firebase/auth'
+import { ref } from 'vue'
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -55,9 +55,14 @@ const login = () => {
     })
 }
 
-const signInWithGoogle = () => {
-  const provider = new GoogleAuthProvider()
-  signInWithRedirect(getAuth(), provider)
+const signInWithGoogle = async() => {
+  signInWithPopup(getAuth(), new GoogleAuthProvider())
+    .then((data) => {
+      router.push('/dashboard')
+    })
+    .catch((error) => {
+      console.log(error)
+    })
 }
 
 </script>
