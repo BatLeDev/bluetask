@@ -15,8 +15,7 @@ const router = useRouter()
 
 const authListener = onAuthStateChanged(getAuth(), (user) => {
   if (!user) {
-    alert('you must be logged in to view this. redirecting to the home page')
-    router.push('/')
+    router.push('/authentication/login')
   }
 })
 

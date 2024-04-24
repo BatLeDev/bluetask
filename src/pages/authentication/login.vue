@@ -1,32 +1,104 @@
 <template>
   <Header :showSignUp="true" />
-  <v-container>
-    <h1>Log in to BlueTask</h1>
-    <p><input
-        type="text"
-        placeholder="Email"
+  <v-container
+    class="d-flex align-center justify-center"
+    style="height: 80%;"
+  >
+    <v-card
+      class="pa-12 pb-8 text-center"
+      elevation="8"
+      max-width="500"
+      rounded="lg"
+    >
+      <v-card-title class="text-lg-h4 font-weight-bold mb-4">Log in to <span
+          class="text-accent">BlueTask</span></v-card-title>
+
+      <v-alert
+        v-if="errMsg"
+        :text=errMsg
+        type="error"
+        variant="outlined"
+        density="compact"
+        class="mb-4"
+      />
+
+      <v-btn
+        icon="mdi-google"
+        variant="outlined"
+        class="mb-4"
+        @click="signInWithGoogle"
+      />
+
+      <p class="font-italic text-h6 font-weight-light mb-4">Or</p>
+
+      <v-text-field
         v-model="email"
-      /></p>
-    <p><input
-        type="password"
-        placeholder="Password"
+        :rules="[required]"
+        density="compact"
+        label="Email"
+        placeholder="Email address"
+        prepend-inner-icon="mdi-email-outline"
+        variant="outlined"
+        class="mb-4"
+      />
+
+      <!-- <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
+        <a
+          class="text-caption text-decoration-none text-blue"
+          href="#"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Forgot login password?</a>
+      </div> -->
+
+      <v-text-field
         v-model="password"
-      /></p>
-      <p v-if="errMsg">{{  errMsg }}</p>
-    <p><button @click="login">Login</button></p>
-    <p><button @click="signInWithGoogle">Login with Google</button></p>
+        :rules="[required]"
+        :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="visible ? 'text' : 'password'"
+        density="compact"
+        label="Password"
+        placeholder="Enter your password"
+        prepend-inner-icon="mdi-lock-outline"
+        variant="outlined"
+        class="mb-4"
+        @click:append-inner="visible = !visible"
+      />
+
+      <v-btn
+        append-icon="mdi-login"
+        variant="elevated"
+        color="accent"
+        rounded="lg"
+        @click="login"
+      >
+        Log In
+      </v-btn>
+
+      <v-card-text class="text-center">
+        <a
+          href="/authentication/register"
+          class="link"
+        >
+          You don't have an account ? Sign up now
+        </a>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { onBeforeUnmount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const errMsg = ref()
 const email = ref('')
 const password = ref('')
-const errMsg = ref()
+const visible = ref(false)
+const required = (v) => !!v || 'This field is required'
 
 const login = () => {
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
@@ -55,7 +127,7 @@ const login = () => {
     })
 }
 
-const signInWithGoogle = async() => {
+const signInWithGoogle = async () => {
   signInWithPopup(getAuth(), new GoogleAuthProvider())
     .then((data) => {
       router.push('/dashboard')
@@ -65,6 +137,16 @@ const signInWithGoogle = async() => {
     })
 }
 
+// For user who are already logged in
+const authListener = onAuthStateChanged(getAuth(), (user) => {
+  if (user) {
+    router.push('/dashboard')
+  }
+})
+
+onBeforeUnmount(() => {
+  authListener()
+})
 </script>
 
 <style scoped></style>

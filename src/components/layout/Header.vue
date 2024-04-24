@@ -74,9 +74,7 @@ onMounted(() => {
 
 const logout = () => {
   signOut(auth)
-    .then(() => {
-      router.push('/')
-    })
+  router.push('/')
 }
 
 </script>

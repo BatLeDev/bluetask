@@ -20,15 +20,4 @@
 </script>
 
 <style scoped>
-  /* Custom link style */
-  .link {
-    color: rgb(var(--v-theme-on-background));
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  .link:hover {
-    color: rgb(var(--v-theme-secondary));
-    text-decoration: underline;
-  }
 </style>

@@ -27,12 +27,12 @@
 
   /* Remove unnecessary scrollbar */
   html {
-    overflow-y: auto
+    overflow-y: auto !important;
   }
 
   /* Custom link style */
   .link {
-    color: rgb(var(--v-theme-primary));
+    color: rgb(var(--v-theme-on-background));
     text-decoration: none;
     transition: color 0.3s ease;
   }

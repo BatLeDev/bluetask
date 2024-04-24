@@ -71,6 +71,22 @@
 </template>
 
 <script setup>
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// For user who are already logged in
+const authListener = onAuthStateChanged(getAuth(), (user) => {
+  if (user) {
+    router.push('/dashboard')
+  }
+})
+
+onBeforeUnmount(() => {
+  authListener()
+})
 </script>
 
 <style scoped>
