@@ -1,19 +1,22 @@
 <template>
   <v-app-bar color="primary">
-
+    <v-app-bar-nav-icon
+      v-if="isLogged"
+      @click.stop="rail = !rail"
+    />
     <v-img
-      class="ml-8"
+      :class="isLogged ? 'ml-2' : 'ml-8'"
       src="@/assets/logo.png"
       draggable="false"
       max-width="50"
       contain
-      @click="$router.push('/')"
+      @click="isLogged ? router.push('/dashboard') : router.push('/')"
     />
     <v-app-bar-title
       text="BlueTask"
       class="text-lg-h5 font-weight-bold ml-2"
       style="user-select: none;"
-      @click="$router.push('/')"
+      @click="isLogged ? router.push('/dashboard') : router.push('/')"
     />
 
     <v-btn
@@ -47,6 +50,12 @@
       Logout
     </v-btn>
   </v-app-bar>
+
+  <NavigationDrawer
+    v-if="isLogged"
+    :rail
+  />
+
 </template>
 
 <script setup>
@@ -57,13 +66,8 @@ import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 let auth
 const router = useRouter()
 const isLogged = ref(false)
-
-defineProps({
-  showSignUp: {
-    type: Boolean,
-    default: false
-  }
-})
+const rail = ref(true)
+const showSignUp = router.currentRoute.value.path === '/authentication/login'
 
 onMounted(() => {
   auth = getAuth()

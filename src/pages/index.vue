@@ -1,6 +1,4 @@
 <template>
-  <Header />
-
   <v-container>
     <v-row
       class="mx-2"

@@ -1,13 +1,17 @@
 <template>
   <v-app>
     <v-main>
+      <Header />
       <router-view />
-      <Footer />
+      <Footer v-if="!$route.path.startsWith('/dashboard')" />
     </v-main>
   </v-app>
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 </script>
 
 <style>

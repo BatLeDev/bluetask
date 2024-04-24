@@ -1,5 +1,4 @@
 <template>
-  <Header />
   <v-container>
     <h1 class="display-2 text-center my-4">Contactez-nous</h1>
 
