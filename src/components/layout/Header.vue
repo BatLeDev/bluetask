@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="primary">
+  <v-app-bar color="primary" elevation="1">
     <v-app-bar-nav-icon
       v-if="isLogged"
       @click.stop="rail = !rail"
@@ -66,7 +66,7 @@ import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 let auth
 const router = useRouter()
 const isLogged = ref(false)
-const rail = ref(true)
+const rail = ref(false)
 const showSignUp = router.currentRoute.value.path === '/authentication/login'
 
 onMounted(() => {
