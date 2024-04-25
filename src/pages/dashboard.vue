@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <CreateTaskComponent/>
     <h1>Dashboard</h1>
   </v-container>
 </template>
