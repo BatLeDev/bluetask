@@ -101,7 +101,7 @@ const required = (v) => !!v || 'This field is required'
 
 const login = () => {
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
-    .then((data) => {
+    .then(() => {
       router.push('/dashboard')
     })
     .catch((error) => {
@@ -128,7 +128,7 @@ const login = () => {
 
 const signInWithGoogle = async () => {
   signInWithPopup(getAuth(), new GoogleAuthProvider())
-    .then((data) => {
+    .then(() => {
       router.push('/dashboard')
     })
     .catch((error) => {

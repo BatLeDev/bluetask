@@ -6,7 +6,7 @@
     permanent
   >
     <v-list
-      active-color="primary"
+      color="primary"
       mandatory
     >
       <v-list-item
@@ -32,9 +32,10 @@
       <!-- <v-list-subheader>Labels</v-list-subheader> -->
       <v-list-item
         v-for="label in labels"
-        :prepend-icon=label.icon
-        :title=label.title
-        :value=label.title
+        :key="label.title"
+        :prepend-icon="label.icon"
+        :title="label.title"
+        :value="label.title"
         rounded="e-pill"
       />
       <v-list-item
@@ -58,7 +59,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
 const props = defineProps({
   rail: {
@@ -67,7 +67,6 @@ const props = defineProps({
   }
 })
 
-const router = useRouter()
 const drawer = ref(true)
 
 // Some randoms labels
