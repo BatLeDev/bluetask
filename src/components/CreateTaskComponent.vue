@@ -2,80 +2,86 @@
   <v-container class="d-flex align-center justify-center">
     <v-card
       elevation="8"
+      width="100%"
       max-width="500"
       rounded="lg"
+      class="mx-auto px-6 pb-6"
     >
-      <v-card-text>
-        <v-text-field
-          v-model="task.title"
-          placeholder="Title"
-          variant="plain"
-        />
+      <v-text-field
+        v-model="task.title"
+        placeholder="Title"
+        variant="plain"
+      />
 
-        <v-textarea
-          v-model="task.description"
-          placeholder="Description"
-          variant="plain"
-        />
+      <v-textarea
+        v-model="task.description"
+        auto-grow
+        class="my-n6"
+        density="compact"
+        placeholder="Description"
+        rows="1"
+        variant="plain"
+      />
 
-        <v-text-field
-          v-model="newLine"
-          placeholder="Add a new line"
-          variant="plain"
-          :prepend-icon="newLine ? 'mdi-checkbox-blank-outline' : 'mdi-plus'"
-          ref="newLineRef"
-          @keyup.enter="$event.target.blur()"
-          @blur="addTaskLine()"
+      <v-text-field
+        v-model="newLine"
+        density="compact"
+        placeholder="Add a new line"
+        ref="newLineRef"
+        variant="plain"
+        :prepend-icon="newLine ? 'mdi-checkbox-blank-outline' : 'mdi-plus'"
+        @keyup.enter="$event.target.blur()"
+        @blur="addTaskLine()"
+      >
+        <template
+          v-if="newLine"
+          v-slot:append
         >
-          <template
-            v-if="newLine"
-            v-slot:append
-          >
-            <v-tooltip location="bottom">
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  icon="mdi-plus"
-                  density="comfortable"
-                  size="small"
-                  elevation="0"
-                />
-              </template>
-              Add
-            </v-tooltip>
-          </template>
-        </v-text-field>
+          <v-tooltip location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                v-bind="props"
+                density="comfortable"
+                elevation="0"
+                icon="mdi-plus"
+                size="small"
+              />
+            </template>
+            Add
+          </v-tooltip>
+        </template>
+      </v-text-field>
 
-        <v-text-field
-          v-for="line in task.lines"
-          :key="line"
-          :model-value="line.text"
-          :prepend-icon="line.checked ? 'mdi-checkbox-outline' : 'mdi-checkbox-blank-outline'"
-          variant="plain"
-          @keyup.enter="$event.target.blur()"
-          @blur="console.log('blur')"
-        >
-          <template v-slot:append>
-            <v-tooltip location="bottom">
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  icon="mdi-close"
-                  density="comfortable"
-                  size="small"
-                  elevation="0"
-                  @click="task.lines.splice(task.lines.indexOf(line), 1)"
-                />
-              </template>
-              Delete
-            </v-tooltip>
-          </template>
-        </v-text-field>
+      <v-text-field
+        v-for="line in task.lines"
+        class="mt-n6"
+        density="compact"
+        variant="plain"
+        :key="line"
+        :model-value="line.text"
+        :prepend-icon="line.checked ? 'mdi-checkbox-outline' : 'mdi-checkbox-blank-outline'"
+        @keyup.enter="$event.target.blur()"
+        @blur="console.log('blur')"
+      >
+        <template v-slot:append>
+          <v-tooltip location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                v-bind="props"
+                icon="mdi-close"
+                density="comfortable"
+                size="small"
+                elevation="0"
+                @click="task.lines.splice(task.lines.indexOf(line), 1)"
+              />
+            </template>
+            Delete
+          </v-tooltip>
+        </template>
+      </v-text-field>
 
 
-        <!-- Ajout de plusieurs lignes -->
-
-      </v-card-text>
+      <!-- Ajout de plusieurs lignes -->
 
       <!-- Footer card -->
       <!-- v-date-picker -->
