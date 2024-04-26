@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <EditTaskCard />
+    <EditTaskCard create/>
     <!-- Set an empty state component -->
   </v-container>
 </template>

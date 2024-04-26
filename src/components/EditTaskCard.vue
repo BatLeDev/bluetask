@@ -137,6 +137,7 @@
             id="delete-activator"
             icon="mdi-delete-outline"
             variant="flat"
+            @click="create ? clearTask() : null"
           />
         </v-col>
 
@@ -158,7 +159,7 @@
           activator="#delete-activator"
           location="bottom"
         >
-          Delete task
+          {{ create ? 'Clear' : 'Delete'}}
         </v-tooltip>
 
         <v-tooltip
@@ -230,9 +231,10 @@
 
         <v-col class="text-right pa-0">
           <v-btn
-            @click="createTask"
+            v-if="create"
             color="primary"
             class="justify-end"
+            @click="createTask"
           >
             Create task
           </v-btn>
@@ -246,7 +248,17 @@
 import { ref } from 'vue'
 import { VConfirmEdit } from 'vuetify/labs/VConfirmEdit'
 import { VSpeedDial } from 'vuetify/labs/VSpeedDial'
+import { getAuth } from 'firebase/auth'
+import { collection, getFirestore, addDoc } from 'firebase/firestore'
 
+defineProps({
+  create: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const db = getFirestore()
 const newLine = ref('')
 const newLineRef = ref()
 const task = ref({
@@ -259,8 +271,16 @@ const task = ref({
   linesChecked: []
 })
 
-const createTask = () => {
-  console.log(task.value)
+const createTask = async () => {
+  const user = getAuth().currentUser
+  const cleanTask = Object.fromEntries(
+    Object.entries(task.value).filter(([, value]) => value !== undefined)
+  );
+  await addDoc(collection(db, 'tasks'), {
+    ...cleanTask,
+    userId: user.uid
+  })
+  clearTask()
 }
 
 const addTaskLine = () => {
@@ -278,6 +298,18 @@ const check = (line, checked) => {
   } else {
     task.value.linesChecked.splice(task.value.linesChecked.indexOf(line), 1)
     task.value.lines.unshift(line)
+  }
+}
+
+const clearTask = () => {
+  task.value = {
+    title: '',
+    description: '',
+    startDate: undefined,
+    endDate: undefined,
+    priority: 1,
+    lines: [],
+    linesChecked: []
   }
 }
 </script>

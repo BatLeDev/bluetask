@@ -1,7 +1,7 @@
 import App from './App.vue'
-import { createApp } from 'vue'
-import { initializeApp } from "firebase/app";
 import { registerPlugins } from '@/plugins'
+import { initializeApp } from "firebase/app";
+import { createApp } from 'vue'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
