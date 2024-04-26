@@ -9,6 +9,7 @@
     >
       <v-text-field
         v-model="task.title"
+        class="font-weight-black title"
         placeholder="Title"
         variant="plain"
       />
@@ -126,21 +127,17 @@
             variant="flat"
           />
           <v-btn
-          class="text-none"
-          density="compact"
-          id="priority-activator"
-          rounded="pill"
-          variant="flat"
-          :color="task.priority === 0 ? 'success' : task.priority === 1 ? 'warning' : 'error'"
-          >
-          {{ task.priority === 0 ? 'Low' : task.priority === 1 ? 'Medium' : 'High' }}
-        </v-btn>
-        <v-btn
-          density="comfortable"
-          id="delete-activator"
-          icon="mdi-delete-outline"
-          variant="flat"
-        />
+            class="text-none"
+            id="priority-activator"
+            icon="mdi-flag-outline"
+            variant="flat"
+          />
+          <v-btn
+            density="comfortable"
+            id="delete-activator"
+            icon="mdi-delete-outline"
+            variant="flat"
+          />
         </v-col>
 
         <v-tooltip
@@ -229,12 +226,7 @@
           </v-btn>
         </v-speed-dial>
         <!-- Color menu -->
-        <!-- menu with all colors + btn to add colors -->
-        <!-- Color picker -->
-
-        <!-- label menu -->
-
-        <!-- Delete btn -->
+        <!-- Label menu -->
 
         <v-col class="text-right pa-0">
           <v-btn
