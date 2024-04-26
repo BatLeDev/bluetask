@@ -12,7 +12,7 @@ const baseColors = {
   error: '#FF5252',
   info: '#1E88E5',
   success: '#4CAF50',
-  warning: '#E91E63',
+  warning: '#FF9800',
   admin: '#E53935'
 }
 

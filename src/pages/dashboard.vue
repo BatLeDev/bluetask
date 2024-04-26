@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <CreateTaskComponent/>
-    <h1>Dashboard</h1>
+    <EditTaskCard />
+    <!-- Set an empty state component -->
   </v-container>
 </template>
 
