@@ -7,6 +7,7 @@
       rounded="lg"
       class="mx-auto px-6 pb-6"
     >
+      <!-- Title -->
       <v-text-field
         v-model="task.title"
         class="font-weight-black title"
@@ -14,6 +15,7 @@
         variant="plain"
       />
 
+      <!-- Description -->
       <v-textarea
         v-model="task.description"
         auto-grow
@@ -24,6 +26,7 @@
         variant="plain"
       />
 
+      <!-- Add new line -->
       <v-text-field
         v-model="newLine"
         density="compact"
@@ -38,21 +41,22 @@
           v-if="newLine"
           v-slot:append
         >
-          <v-tooltip location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                v-bind="props"
-                density="comfortable"
-                variant="flat"
-                icon="mdi-plus"
-                size="small"
-              />
-            </template>
-            Add
-          </v-tooltip>
+          <v-btn
+            density="comfortable"
+            icon="mdi-plus"
+            id="add-line"
+            size="small"
+            variant="flat"
+          />
+          <v-tooltip
+            location="bottom"
+            activator="#add-line"
+            text="Add"
+          />
         </template>
       </v-text-field>
 
+      <!-- Lines not checked -->
       <v-text-field
         v-for="(line, index) in task.lines"
         class="mt-n6"
@@ -80,11 +84,11 @@
         </template>
       </v-text-field>
 
+      <!-- Lines checked -->
       <v-divider
         v-if="task.linesChecked.length > 0"
         class="mb-6 mt-n4"
       />
-
       <v-text-field
         v-for="(line, index) in task.linesChecked"
         class="mt-n6 line-through text-disabled font-italic"
@@ -96,23 +100,24 @@
         @click:prepend="check(line, false)"
       >
         <template v-slot:append>
-          <v-tooltip location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                v-bind="props"
-                icon="mdi-close"
-                density="comfortable"
-                size="small"
-                variant="flat"
-                @click="task.linesChecked.splice(index, 1)"
-              />
-            </template>
-            Delete
-          </v-tooltip>
+          <v-btn
+            id="delete-line"
+            icon="mdi-close"
+            density="comfortable"
+            size="small"
+            variant="flat"
+            @click="task.linesChecked.splice(index, 1)"
+          />
+          <v-tooltip
+            location="bottom"
+            activator="#delete-line"
+            text="Delete"
+          />
         </template>
       </v-text-field>
 
-      <v-row class="mt-0">
+      <!-- Actions -->
+      <v-row>
         <v-col class="pa-0">
           <v-btn
             density="comfortable"
@@ -137,37 +142,30 @@
             id="delete-activator"
             icon="mdi-delete-outline"
             variant="flat"
-            @click="create ? clearTask() : null"
+            @click="create ? task.value = JSON.parse(JSON.stringify(emptyTask)) : null"
           />
         </v-col>
 
         <v-tooltip
           activator="#start-date-activator"
           location="bottom"
-        >
-          Start date
-        </v-tooltip>
-
+          text="Start date"
+        />
         <v-tooltip
           activator="#end-date-activator"
           location="bottom"
-        >
-          End date
-        </v-tooltip>
-
-        <v-tooltip
-          activator="#delete-activator"
-          location="bottom"
-        >
-          {{ create ? 'Clear' : 'Delete'}}
-        </v-tooltip>
-
+          text="End date"
+        />
         <v-tooltip
           activator="#priority-activator"
           location="bottom"
-        >
-          Priority
-        </v-tooltip>
+          text="Priority"
+        />
+        <v-tooltip
+          activator="#delete-activator"
+          location="bottom"
+          :text="create ? 'Clear' : 'Delete'"
+        />
 
         <v-menu
           activator="#start-date-activator"
@@ -199,45 +197,52 @@
           </v-confirm-edit>
         </v-menu>
 
-        <v-speed-dial
+        <v-menu
           location="bottom center"
-          transition="scale-transition"
           activator="#priority-activator"
         >
           <v-btn
             @click="task.priority = 0"
+            class="my-2"
             color="success"
+            density="compact"
             rounded="pill"
-          >
-            Low
-          </v-btn>
+            text="Low"
+          />
           <v-btn
             @click="task.priority = 1"
+            class="mb-2"
             color="warning"
+            density="compact"
             rounded="pill"
-          >
-            Medium
-          </v-btn>
+            text="Medium"
+          />
           <v-btn
             @click="task.priority = 2"
             color="error"
+            density="compact"
             rounded="pill"
-          >
-            High
-          </v-btn>
-        </v-speed-dial>
+            text="High"
+          />
+        </v-menu>
+
         <!-- Color menu -->
         <!-- Label menu -->
 
-        <v-col class="text-right pa-0">
+        <!-- Close/Create btn -->
+        <v-col class="d-flex align-center justify-end pa-0">
           <v-btn
             v-if="create"
             color="primary"
-            class="justify-end"
+            text="Create task"
             @click="createTask"
-          >
-            Create task
-          </v-btn>
+          />
+          <v-btn
+            v-else
+            color="primary"
+            text="Close"
+            @click="$emit('close')"
+          />
         </v-col>
       </v-row>
     </v-card>
@@ -247,11 +252,11 @@
 <script setup>
 import { ref } from 'vue'
 import { VConfirmEdit } from 'vuetify/labs/VConfirmEdit'
-import { VSpeedDial } from 'vuetify/labs/VSpeedDial'
 import { getAuth } from 'firebase/auth'
 import { collection, getFirestore, addDoc } from 'firebase/firestore'
 
 defineProps({
+  // If true, the card will be in create mode
   create: {
     type: Boolean,
     default: false
@@ -259,9 +264,7 @@ defineProps({
 })
 
 const db = getFirestore()
-const newLine = ref('')
-const newLineRef = ref()
-const task = ref({
+const emptyTask = {
   title: '',
   description: '',
   startDate: undefined,
@@ -269,18 +272,25 @@ const task = ref({
   priority: 1,
   lines: [],
   linesChecked: []
-})
+}
 
+const newLine = ref('') // Ref to the new line text
+const newLineRef = ref() // Ref to the new line text field
+const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
+
+/**
+ * Create the new task in the database and clear the form
+ */
 const createTask = async () => {
   const user = getAuth().currentUser
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
-  );
+  )
   await addDoc(collection(db, 'tasks'), {
     ...cleanTask,
     userId: user.uid
   })
-  clearTask()
+  task.value = JSON.parse(JSON.stringify(emptyTask)) // Clear the form
 }
 
 const addTaskLine = () => {
@@ -292,26 +302,12 @@ const addTaskLine = () => {
 }
 
 const check = (line, checked) => {
-  if (checked) {
-    task.value.lines.splice(task.value.lines.indexOf(line), 1)
-    task.value.linesChecked.unshift(line)
-  } else {
-    task.value.linesChecked.splice(task.value.linesChecked.indexOf(line), 1)
-    task.value.lines.unshift(line)
-  }
+  const srcList = checked ? task.value.lines : task.value.linesChecked
+  const destList = checked ? task.value.linesChecked : task.value.lines
+  srcList.splice(srcList.indexOf(line), 1)
+  destList.unshift(line)
 }
 
-const clearTask = () => {
-  task.value = {
-    title: '',
-    description: '',
-    startDate: undefined,
-    endDate: undefined,
-    priority: 1,
-    lines: [],
-    linesChecked: []
-  }
-}
 </script>
 
 <style>
