@@ -53,15 +53,14 @@
       </v-text-field>
 
       <v-text-field
-        v-for="line in task.lines"
+        v-for="(line, index) in task.lines"
         class="mt-n6"
         density="compact"
+        prepend-icon="mdi-checkbox-blank-outline"
         variant="plain"
-        :key="line"
-        :model-value="line.text"
-        :prepend-icon="line.checked ? 'mdi-checkbox-outline' : 'mdi-checkbox-blank-outline'"
-        @keyup.enter="$event.target.blur()"
-        @blur="console.log('blur')"
+        :key="index"
+        v-model="task.lines[index]"
+        @click:prepend="check(line, true)"
       >
         <template v-slot:append>
           <v-tooltip location="bottom">
@@ -72,7 +71,7 @@
                 density="comfortable"
                 size="small"
                 elevation="0"
-                @click="task.lines.splice(task.lines.indexOf(line), 1)"
+                @click="task.lines.splice(index, 1)"
               />
             </template>
             Delete
@@ -80,8 +79,36 @@
         </template>
       </v-text-field>
 
+      <v-divider v-if="task.linesChecked.length > 0"
+        class="mb-6 mt-n4" 
+      />
 
-      <!-- Ajout de plusieurs lignes -->
+      <v-text-field
+        v-for="(line, index) in task.linesChecked"
+        class="mt-n6 line-through text-disabled font-italic"
+        density="compact"
+        prepend-icon="mdi-checkbox-outline"
+        variant="plain"
+        :key="index"
+        v-model="task.linesChecked[index]"
+        @click:prepend="check(line, false)"
+      >
+        <template v-slot:append>
+          <v-tooltip location="bottom">
+            <template v-slot:activator="{ props }">
+              <v-btn
+                v-bind="props"
+                icon="mdi-close"
+                density="comfortable"
+                size="small"
+                elevation="0"
+                @click="task.linesChecked.splice(index, 1)"
+              />
+            </template>
+            Delete
+          </v-tooltip>
+        </template>
+      </v-text-field>
 
       <!-- Footer card -->
       <!-- v-date-picker -->
@@ -100,13 +127,13 @@
 <script setup>
 import { ref } from 'vue'
 
-// const expanded = ref(false)
 const newLine = ref('')
 const newLineRef = ref()
 const task = ref({
   title: '',
   description: '',
-  lines: []
+  lines: [],
+  linesChecked: []
 })
 
 const createTask = () => {
@@ -115,15 +142,25 @@ const createTask = () => {
 
 const addTaskLine = () => {
   if (newLine.value) {
-    task.value.lines.unshift({
-      checked: false,
-      text: newLine.value
-    })
+    task.value.lines.unshift(newLine.value)
     newLine.value = ''
     newLineRef.value.focus()
   }
 }
 
+const check = (line, checked) => {
+  if (checked) {
+    task.value.lines.splice(task.value.lines.indexOf(line), 1)
+    task.value.linesChecked.unshift(line)
+  } else {
+    task.value.linesChecked.splice(task.value.linesChecked.indexOf(line), 1)
+    task.value.lines.unshift(line)
+  }
+}
 </script>
 
-<style scoped></style>
+<style>
+.line-through .v-input__control {
+  text-decoration: line-through;
+}
+</style>
