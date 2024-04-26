@@ -17,7 +17,7 @@ const baseColors = {
 }
 
 const darkBaseColors = {
-  accent: '#BA68C8',
+  accent: '#BA68C8'
 }
 
 const lightColors = { ...baseColors }
@@ -37,5 +37,5 @@ export default createVuetify({
         colors: darkColors
       }
     }
-  },
+  }
 })

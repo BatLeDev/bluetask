@@ -72,7 +72,7 @@ const showSignUp = router.currentRoute.value.path === '/authentication/login'
 onMounted(() => {
   auth = getAuth()
   onAuthStateChanged(auth, (user) => {
-    isLogged.value = user ? true : false
+    isLogged.value = user
   })
 })
 

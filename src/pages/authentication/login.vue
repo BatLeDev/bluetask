@@ -107,8 +107,8 @@ const login = () => {
     .catch((error) => {
       console.log(error.code)
       switch (error.code) {
-        case "auth/invalid-email":
-          errMsg.value = "Invalid email"
+        case 'auth/invalid-email':
+          errMsg.value = 'Invalid email'
           break
         case 'auth/user-not-found':
           errMsg.value = 'User not found'
@@ -122,7 +122,6 @@ const login = () => {
         default:
           errMsg.value = error.message
       }
-
     })
 }
 

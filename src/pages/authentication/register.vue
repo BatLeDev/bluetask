@@ -98,7 +98,7 @@
 </template>
 
 <script setup>
-import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup  } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from 'firebase/auth'
 import { onBeforeUnmount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -120,17 +120,17 @@ const register = () => {
     .catch((error) => {
       console.log(error.code)
       switch (error.code) {
-        case "auth/invalid-email":
-          errMsg.value = "The email address is badly formatted."
+        case 'auth/invalid-email':
+          errMsg.value = 'The email address is badly formatted.'
           break
-        case "auth/email-already-in-use":
-          errMsg.value = "The email address is already in use by another account."
+        case 'auth/email-already-in-use':
+          errMsg.value = 'The email address is already in use by another account.'
           break
-        case "auth/weak-password":
-          errMsg.value = "The password is too weak."
+        case 'auth/weak-password':
+          errMsg.value = 'The password is too weak.'
           break
         default:
-          errMsg.value = "An error occurred. Please try again."
+          errMsg.value = 'An error occurred. Please try again.'
       }
     })
 }
