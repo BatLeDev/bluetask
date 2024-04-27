@@ -4,6 +4,7 @@
     :rail="props.rail"
     expand-on-hover
     permanent
+    touchless
   >
     <v-list
       color="primary"

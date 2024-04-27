@@ -20,7 +20,7 @@
     />
 
     <v-btn
-      v-if="!isLogged && !showSignUp"
+      v-if="!isLogged && $router.currentRoute.value.path !== '/authentication/login'"
       append-icon="mdi-login"
       variant="elevated"
       color="accent"
@@ -30,7 +30,7 @@
       Login
     </v-btn>
     <v-btn
-      v-if="!isLogged && showSignUp"
+      v-if="!isLogged && $router.currentRoute.value.path === '/authentication/login'"
       append-icon="mdi-account-plus"
       variant="elevated"
       color="accent"
@@ -60,20 +60,24 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useDisplay } from 'vuetify'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
 let auth
 const router = useRouter()
+const display = useDisplay()
 const isLogged = ref(false)
 const rail = ref(false)
-const showSignUp = router.currentRoute.value.path === '/authentication/login'
 
 onMounted(() => {
   auth = getAuth()
   onAuthStateChanged(auth, (user) => {
     isLogged.value = user
   })
+  if (display.mdAndDown) {
+    rail.value = true
+  }
 })
 
 const logout = () => {

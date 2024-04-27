@@ -133,6 +133,7 @@
           />
           <v-btn
             class="text-none"
+            density="comfortable"
             id="priority-activator"
             icon="mdi-flag-outline"
             variant="flat"
