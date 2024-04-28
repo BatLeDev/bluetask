@@ -251,20 +251,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { VConfirmEdit } from 'vuetify/labs/VConfirmEdit'
 import { getAuth } from 'firebase/auth'
-import { collection, getFirestore, addDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc } from 'firebase/firestore'
+import { onMounted, ref } from 'vue'
+import { useFirestore } from 'vuefire'
 
-defineProps({
+const props = defineProps({
   // If true, the card will be in create mode
   create: {
     type: Boolean,
     default: false
+  },
+  // The task to edit
+  taskId: {
+    type: String,
+    default: ''
   }
 })
 
-const db = getFirestore()
+const db = useFirestore()
 const emptyTask = {
   title: '',
   description: '',
@@ -274,10 +280,16 @@ const emptyTask = {
   lines: [],
   linesChecked: []
 }
-
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
+
+onMounted(async () => {
+  if (!props.create) {
+    const taskDocument = await getDoc(doc(collection(db, 'tasks'), props.taskId))
+    task.value = taskDocument.data()
+  }
+})
 
 /**
  * Create the new task in the database and clear the form
@@ -294,6 +306,9 @@ const createTask = async () => {
   task.value = JSON.parse(JSON.stringify(emptyTask)) // Clear the form
 }
 
+/**
+ * Add a new line to the task
+ */
 const addTaskLine = () => {
   if (newLine.value) {
     task.value.lines.unshift(newLine.value)
@@ -302,6 +317,11 @@ const addTaskLine = () => {
   }
 }
 
+/**
+ * Check or uncheck a line
+ * @param {string} line - The line to check/uncheck
+ * @param {boolean} checked - If the line is checked or not
+ */
 const check = (line, checked) => {
   const srcList = checked ? task.value.lines : task.value.linesChecked
   const destList = checked ? task.value.linesChecked : task.value.lines

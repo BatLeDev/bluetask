@@ -2,6 +2,7 @@ import App from './App.vue'
 import { registerPlugins } from '@/plugins'
 import { initializeApp } from 'firebase/app'
 import { createApp } from 'vue'
+import { VueFire, VueFireAuth } from 'vuefire'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,10 +13,16 @@ const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET
 }
 
-initializeApp(firebaseConfig)
-
+const firebaseApp = initializeApp(firebaseConfig)
 const app = createApp(App)
 
 registerPlugins(app)
+
+app.use(VueFire, {
+  firebaseApp,
+  modules: [
+    VueFireAuth()
+  ]
+})
 
 app.mount('#app')
