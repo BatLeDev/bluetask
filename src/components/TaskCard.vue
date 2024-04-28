@@ -9,18 +9,19 @@
     >
       <!-- Title -->
       <v-text-field
+        v-if="showFullCard(task.title)"
         v-model="task.title"
-        class="font-weight-black title"
+        class="font-weight-black mb-n8"
         placeholder="Title"
         variant="plain"
       />
 
       <!-- Description -->
       <v-textarea
+        v-if="showFullCard(task.description)"
         v-model="task.description"
         auto-grow
-        class="my-n6"
-        density="compact"
+        class="mb-n6"
         placeholder="Description"
         rows="1"
         variant="plain"
@@ -68,19 +69,19 @@
         @click:prepend="check(line, true)"
       >
         <template v-slot:append>
-          <v-tooltip location="bottom">
-            <template v-slot:activator="{ props }">
-              <v-btn
-                v-bind="props"
-                icon="mdi-close"
-                density="comfortable"
-                size="small"
-                variant="flat"
-                @click="task.lines.splice(index, 1)"
-              />
-            </template>
-            Delete
-          </v-tooltip>
+          <v-btn
+            id="delete-line"
+            icon="mdi-close"
+            density="comfortable"
+            size="small"
+            variant="flat"
+            @click="task.lines.splice(index, 1)"
+          />
+          <v-tooltip
+            location="bottom"
+            activator="#delete-line"
+            text="Delete"
+          />
         </template>
       </v-text-field>
 
@@ -101,7 +102,7 @@
       >
         <template v-slot:append>
           <v-btn
-            id="delete-line"
+            id="delete-lineChecked"
             icon="mdi-close"
             density="comfortable"
             size="small"
@@ -110,7 +111,7 @@
           />
           <v-tooltip
             location="bottom"
-            activator="#delete-line"
+            activator="#delete-lineChecked"
             text="Delete"
           />
         </template>
@@ -143,7 +144,7 @@
             id="delete-activator"
             icon="mdi-delete-outline"
             variant="flat"
-            @click="create ? task.value = JSON.parse(JSON.stringify(emptyTask)) : null"
+            @click="create ? task.value = JSON.parse(JSON.stringify(emptyTask)) : deleteTask()"
           />
         </v-col>
 
@@ -231,7 +232,10 @@
         <!-- Label menu -->
 
         <!-- Close/Create btn -->
-        <v-col class="d-flex align-center justify-end pa-0">
+        <v-col
+          v-if="(showFullCard(''))"
+          class="d-flex align-center justify-end pa-0"
+        >
           <v-btn
             v-if="create"
             color="primary"
@@ -253,7 +257,7 @@
 <script setup>
 import { VConfirmEdit } from 'vuetify/labs/VConfirmEdit'
 import { getAuth } from 'firebase/auth'
-import { addDoc, collection, doc, getDoc } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, getDoc } from 'firebase/firestore'
 import { onMounted, ref } from 'vue'
 import { useFirestore } from 'vuefire'
 
@@ -283,6 +287,8 @@ const emptyTask = {
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
+const isOverlapping = ref(false)
+const showFullCard = (field) => field !== '' || props.create || isOverlapping.value
 
 onMounted(async () => {
   if (!props.create) {
@@ -327,6 +333,13 @@ const check = (line, checked) => {
   const destList = checked ? task.value.linesChecked : task.value.lines
   srcList.splice(srcList.indexOf(line), 1)
   destList.unshift(line)
+}
+
+/**
+ * Delete the task from the database by its ID
+ */
+const deleteTask = async () => {
+  await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
 }
 
 </script>
