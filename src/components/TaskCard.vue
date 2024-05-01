@@ -257,8 +257,8 @@
 <script setup>
 import { VConfirmEdit } from 'vuetify/labs/VConfirmEdit'
 import { getAuth } from 'firebase/auth'
-import { addDoc, collection, deleteDoc, doc, getDoc } from 'firebase/firestore'
-import { onMounted, ref } from 'vue'
+import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { onMounted, ref, watch } from 'vue'
 import { useFirestore } from 'vuefire'
 
 const props = defineProps({
@@ -287,8 +287,8 @@ const emptyTask = {
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
-const isOverlapping = ref(false)
-const showFullCard = (field) => field !== '' || props.create || isOverlapping.value
+const isOverlay = ref(false)
+const showFullCard = (field) => field !== '' || props.create || isOverlay.value
 
 onMounted(async () => {
   if (!props.create) {
@@ -341,6 +341,16 @@ const check = (line, checked) => {
 const deleteTask = async () => {
   await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
 }
+
+watch(
+  task,
+  async () => {
+    if (!props.create) {
+      await updateDoc(doc(collection(db, 'tasks'), props.taskId), task.value)
+    }
+  },
+  { deep: true }
+)
 
 </script>
 
