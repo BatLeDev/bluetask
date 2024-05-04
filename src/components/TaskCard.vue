@@ -29,6 +29,7 @@
 
       <!-- Add new line -->
       <v-text-field
+        v-if="showFullCard('')"
         v-model="newLine"
         density="compact"
         placeholder="Add a new line"
@@ -119,121 +120,134 @@
 
       <!-- Actions -->
       <v-row>
-        <v-col class="pa-0">
+        <v-col
+          v-if="showFullCard('')"
+          class="pa-0"
+        >
           <v-btn
             density="comfortable"
-            id="start-date-activator"
-            icon="mdi-calendar-start-outline"
+            icon
             variant="flat"
-          />
+          >
+            <v-icon>mdi-calendar-start-outline</v-icon>
+            <v-tooltip
+              activator="parent"
+              location="bottom"
+              text="Start date"
+            />
+            <v-menu
+              activator="parent"
+              :close-on-content-click="false"
+            >
+              <v-confirm-edit v-model="task.startDate">
+                <template v-slot:default="{ model: proxyModel, actions }">
+                  <v-date-picker v-model="proxyModel.value">
+                    <template v-slot:actions>
+                      <component :is="actions"></component>
+                    </template>
+                  </v-date-picker>
+                </template>
+              </v-confirm-edit>
+            </v-menu>
+          </v-btn>
+
           <v-btn
             density="comfortable"
-            id="end-date-activator"
-            icon="mdi-calendar-end-outline"
+            icon
             variant="flat"
-          />
+          >
+            <v-icon>mdi-calendar-end-outline</v-icon>
+            <v-tooltip
+              activator="parent"
+              location="bottom"
+              text="End date"
+            />
+            <v-menu
+              activator="parent"
+              :close-on-content-click="false"
+            >
+              <v-confirm-edit v-model="task.endDate">
+                <template v-slot:default="{ model: proxyModel, actions }">
+                  <v-date-picker v-model="proxyModel.value">
+                    <template v-slot:actions>
+                      <component :is="actions"></component>
+                    </template>
+                  </v-date-picker>
+                </template>
+              </v-confirm-edit>
+            </v-menu>
+          </v-btn>
+
           <v-btn
-            class="text-none"
             density="comfortable"
-            id="priority-activator"
-            icon="mdi-flag-outline"
+            icon
             variant="flat"
-          />
+          >
+            <v-icon>mdi-flag-outline</v-icon>
+            <v-tooltip
+              activator="parent"
+              location="bottom"
+              text="Priority"
+            />
+            <v-menu
+              activator="parent"
+              location="bottom center"
+            >
+              <v-btn
+                @click="task.priority = 0"
+                class="my-2"
+                color="success"
+                density="compact"
+                rounded="pill"
+                text="Low"
+              />
+              <v-btn
+                @click="task.priority = 1"
+                class="mb-2"
+                color="warning"
+                density="compact"
+                rounded="pill"
+                text="Medium"
+              />
+              <v-btn
+                @click="task.priority = 2"
+                class="mb-2"
+                color="error"
+                density="compact"
+                rounded="pill"
+                text="High"
+              />
+              <v-btn
+                @click="task.priority = -1"
+                color="grey"
+                density="compact"
+                rounded="pill"
+                text="Not Defined"
+              />
+            </v-menu>
+          </v-btn>
+
           <v-btn
             density="comfortable"
-            id="delete-activator"
-            icon="mdi-delete-outline"
+            icon
             variant="flat"
             @click="create ? task.value = JSON.parse(JSON.stringify(emptyTask)) : deleteTask()"
-          />
+          >
+            <v-icon>mdi-delete-outline</v-icon>
+            <v-tooltip
+              activator="parent"
+              location="bottom"
+              :text="create ? 'Clear' : 'Delete'"
+            />
+          </v-btn>
         </v-col>
-
-        <v-tooltip
-          activator="#start-date-activator"
-          location="bottom"
-          text="Start date"
-        />
-        <v-tooltip
-          activator="#end-date-activator"
-          location="bottom"
-          text="End date"
-        />
-        <v-tooltip
-          activator="#priority-activator"
-          location="bottom"
-          text="Priority"
-        />
-        <v-tooltip
-          activator="#delete-activator"
-          location="bottom"
-          :text="create ? 'Clear' : 'Delete'"
-        />
-
-        <v-menu
-          activator="#start-date-activator"
-          :close-on-content-click="false"
-        >
-          <v-confirm-edit v-model="task.startDate">
-            <template v-slot:default="{ model: proxyModel, actions }">
-              <v-date-picker v-model="proxyModel.value">
-                <template v-slot:actions>
-                  <component :is="actions"></component>
-                </template>
-              </v-date-picker>
-            </template>
-          </v-confirm-edit>
-        </v-menu>
-
-        <v-menu
-          activator="#end-date-activator"
-          :close-on-content-click="false"
-        >
-          <v-confirm-edit v-model="task.endDate">
-            <template v-slot:default="{ model: proxyModel, actions }">
-              <v-date-picker v-model="proxyModel.value">
-                <template v-slot:actions>
-                  <component :is="actions"></component>
-                </template>
-              </v-date-picker>
-            </template>
-          </v-confirm-edit>
-        </v-menu>
-
-        <v-menu
-          location="bottom center"
-          activator="#priority-activator"
-        >
-          <v-btn
-            @click="task.priority = 0"
-            class="my-2"
-            color="success"
-            density="compact"
-            rounded="pill"
-            text="Low"
-          />
-          <v-btn
-            @click="task.priority = 1"
-            class="mb-2"
-            color="warning"
-            density="compact"
-            rounded="pill"
-            text="Medium"
-          />
-          <v-btn
-            @click="task.priority = 2"
-            color="error"
-            density="compact"
-            rounded="pill"
-            text="High"
-          />
-        </v-menu>
 
         <!-- Color menu -->
         <!-- Label menu -->
 
         <!-- Close/Create btn -->
         <v-col
-          v-if="(showFullCard(''))"
+          v-if="showFullCard('')"
           class="d-flex align-center justify-end pa-0"
         >
           <v-btn
@@ -280,7 +294,7 @@ const emptyTask = {
   description: '',
   startDate: undefined,
   endDate: undefined,
-  priority: 1,
+  priority: -1,
   lines: [],
   linesChecked: []
 }
@@ -302,6 +316,14 @@ onMounted(async () => {
  */
 const createTask = async () => {
   const user = getAuth().currentUser
+  if (!user) return
+  if (
+    task.value.title.trim() === '' &&
+    task.value.description.trim() === '' &&
+    task.value.lines.length === 0 &&
+    task.value.linesChecked.length === 0
+  ) return
+
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
   )
@@ -342,6 +364,9 @@ const deleteTask = async () => {
   await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
 }
 
+/**
+ * Update the task in the database when the task object changes (only if not in create model)
+ */
 watch(
   task,
   async () => {
