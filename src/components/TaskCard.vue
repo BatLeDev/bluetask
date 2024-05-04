@@ -6,14 +6,17 @@
       max-width="500"
       rounded="lg"
       class="mx-auto px-6 pb-6"
+      :class="(task.title.trim() === '' && task.description.trim() === '' && !showFullCard('')) ? 'pt-10' : ''"
     >
       <!-- Title -->
       <v-text-field
         v-if="showFullCard(task.title)"
         v-model="task.title"
-        class="font-weight-black mb-n8"
+        class="font-weight-black"
+        :class="showFullCard(task.description) ? 'mb-n8' : 'mb-n5'"
         placeholder="Title"
         variant="plain"
+        :readonly="!showFullCard('')"
       />
 
       <!-- Description -->
@@ -21,10 +24,11 @@
         v-if="showFullCard(task.description)"
         v-model="task.description"
         auto-grow
-        class="mb-n6"
+        :class="(task.lines.length > 0 && !showFullCard('')) ? 'mb-n12' : 'mb-n6'"
         placeholder="Description"
         rows="1"
         variant="plain"
+        :readonly="!showFullCard('')"
       />
 
       <!-- Add new line -->
@@ -61,15 +65,19 @@
       <!-- Lines not checked -->
       <v-text-field
         v-for="(line, index) in task.lines"
+        v-model="task.lines[index]"
         class="mt-n6"
         density="compact"
         prepend-icon="mdi-checkbox-blank-outline"
         variant="plain"
         :key="index"
-        v-model="task.lines[index]"
+        :readonly="!showFullCard('')"
         @click:prepend="check(line, true)"
       >
-        <template v-slot:append>
+        <template
+          v-if="showFullCard('')"
+          v-slot:append
+        >
           <v-btn
             id="delete-line"
             icon="mdi-close"
@@ -79,8 +87,8 @@
             @click="task.lines.splice(index, 1)"
           />
           <v-tooltip
-            location="bottom"
             activator="#delete-line"
+            location="bottom"
             text="Delete"
           />
         </template>
@@ -93,15 +101,19 @@
       />
       <v-text-field
         v-for="(line, index) in task.linesChecked"
+        v-model="task.linesChecked[index]"
         class="mt-n6 line-through text-disabled font-italic"
         density="compact"
         prepend-icon="mdi-checkbox-outline"
         variant="plain"
         :key="index"
-        v-model="task.linesChecked[index]"
+        :readonly="!showFullCard('')"
         @click:prepend="check(line, false)"
       >
-        <template v-slot:append>
+        <template
+          v-if="showFullCard('')"
+          v-slot:append
+        >
           <v-btn
             id="delete-lineChecked"
             icon="mdi-close"
@@ -111,8 +123,8 @@
             @click="task.linesChecked.splice(index, 1)"
           />
           <v-tooltip
-            location="bottom"
             activator="#delete-lineChecked"
+            location="bottom"
             text="Delete"
           />
         </template>
@@ -120,6 +132,7 @@
 
       <!-- Actions -->
       <v-row>
+        <!-- Groupe d'action de gauche -->
         <v-col
           v-if="showFullCard('')"
           class="pa-0"
@@ -302,7 +315,7 @@ const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
 const isOverlay = ref(false)
-const showFullCard = (field) => field !== '' || props.create || isOverlay.value
+const showFullCard = (field) => field.trim() !== '' || props.create || isOverlay.value
 
 onMounted(async () => {
   if (!props.create) {
