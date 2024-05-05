@@ -15,10 +15,10 @@
     </v-empty-state>
     <div class="items">
       <TaskCard
-        v-for="taskId in tasks"
+        v-for="task in tasks"
         class="item"
-        :key="taskId"
-        :taskId="taskId"
+        :key="task"
+        :taskId="task.id"
       />
     </div>
   </v-container>
@@ -60,26 +60,13 @@ const queryRef = computed(() => {
   }
 })
 
-const tasksCollection = useCollection(queryRef, { ssrKey: 'tasks' })
-
-const tasks = computed(() => {
-  return tasksCollection.value
-    .map(task => task.id)
-})
+const tasks = useCollection(queryRef, { ssrKey: 'tasks' })
 
 </script>
 
 <style scoped>
 .items {
   column-count: 4;
-  column-gap: 10px;
-  padding: 0 5px;
-}
-
-.item {
-  display: inline-block;
-  width: 100%;
-  margin: 5px 0;
 }
 
 /* Make it responsive */

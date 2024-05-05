@@ -24,7 +24,7 @@
         v-if="showFullCard(task.description)"
         v-model="task.description"
         auto-grow
-        :class="(task.lines.length > 0 && !showFullCard('')) ? 'mb-n12' : 'mb-n6'"
+        :class="(task.lines.length > 0 && !showFullCard('')) ? 'mb-n12' : 'mb-n5'"
         placeholder="Description"
         rows="1"
         variant="plain"
