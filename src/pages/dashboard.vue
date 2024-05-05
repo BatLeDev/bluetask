@@ -27,12 +27,12 @@
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { collection, query, where } from 'firebase/firestore'
-import { computed, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount } from 'vue'
 import { VEmptyState } from 'vuetify/labs/VEmptyState'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
 
-const currentUser = useCurrentUser()
+const user = useCurrentUser()
 const router = useRouter()
 const db = useFirestore()
 
@@ -46,33 +46,19 @@ onBeforeUnmount(() => {
   authListener()
 })
 
-const queryRef = computed(() => {
-  if (!currentUser.value) {
-    return query(
+const tasks = useCollection(() =>
+  user.value
+    ? query(
       collection(db, 'tasks'),
-      where('userId', '==', '')
+      where('userId', '==', user.value.uid)
     )
-  } else {
-    return query(
-      collection(db, 'tasks'),
-      where('userId', '==', currentUser.value.uid)
-    )
-  }
-})
-
-const tasks = useCollection(queryRef, { ssrKey: 'tasks' })
-
+    : null,
+{ ssrKey: 'task' }
+)
 </script>
 
 <style scoped>
 .items {
   column-count: 4;
-}
-
-/* Make it responsive */
-@media only screen and (max-width: 1200px) {
-  .items {
-    column-count: 3;
-  }
 }
 </style>
