@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <TaskCard create />
-
     <v-empty-state
       v-if="tasks.length === 0"
       title="No tasks"
@@ -14,43 +13,28 @@
         />
       </template>
     </v-empty-state>
-
-    <v-row
-      v-else
-      no-gutters
-    >
-      <v-col
+    <div class="items">
+      <TaskCard
         v-for="taskId in tasks"
-        cols="12"
-        md="6"
-        lg="4"
-        xl="3"
+        class="item"
         :key="taskId"
-      >
-        <TaskCard :taskId="taskId" />
-      </v-col>
-    </v-row>
+        :taskId="taskId"
+      />
+    </div>
   </v-container>
 </template>
 
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { collection } from 'firebase/firestore'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { collection, query, where } from 'firebase/firestore'
+import { computed, onBeforeUnmount } from 'vue'
 import { VEmptyState } from 'vuetify/labs/VEmptyState'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
 
+const currentUser = useCurrentUser()
 const router = useRouter()
 const db = useFirestore()
-const user = useCurrentUser()
-
-const tasksCollection = useCollection(collection(db, 'tasks'))
-const tasks = computed(() => {
-  return tasksCollection.value
-    .filter(task => task.userId === user.value.uid)
-    .map(task => task.id)
-})
 
 const authListener = onAuthStateChanged(getAuth(), (user) => {
   if (!user) {
@@ -62,8 +46,46 @@ onBeforeUnmount(() => {
   authListener()
 })
 
-const selectedTaskId = ref(undefined)
+const queryRef = computed(() => {
+  if (!currentUser.value) {
+    return query(
+      collection(db, 'tasks'),
+      where('userId', '==', '')
+    )
+  } else {
+    return query(
+      collection(db, 'tasks'),
+      where('userId', '==', currentUser.value.uid)
+    )
+  }
+})
+
+const tasksCollection = useCollection(queryRef, { ssrKey: 'tasks' })
+
+const tasks = computed(() => {
+  return tasksCollection.value
+    .map(task => task.id)
+})
+
 </script>
 
 <style scoped>
+.items {
+  column-count: 4;
+  column-gap: 10px;
+  padding: 0 5px;
+}
+
+.item {
+  display: inline-block;
+  width: 100%;
+  margin: 5px 0;
+}
+
+/* Make it responsive */
+@media only screen and (max-width: 1200px) {
+  .items {
+    column-count: 3;
+  }
+}
 </style>

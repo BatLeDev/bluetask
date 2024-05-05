@@ -96,7 +96,7 @@
 
       <!-- Lines checked -->
       <v-divider
-        v-if="task.linesChecked.length > 0"
+        v-if="task.linesChecked.length > 0 && (task.lines.length > 0 || showFullCard(''))"
         class="mb-6 mt-n4"
       />
       <v-text-field
