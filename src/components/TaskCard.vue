@@ -75,6 +75,7 @@
         :key="index"
         :readonly="!showFullCard"
         @click:prepend="check(line, true)"
+        @click.stop
       >
         <template
           v-if="showFullCard"
@@ -112,6 +113,7 @@
         :key="index"
         :readonly="!showFullCard"
         @click:prepend="check(line, false)"
+        @click.stop
       >
         <template
           v-if="showFullCard"
@@ -134,7 +136,10 @@
       </v-text-field>
 
       <!-- Actions -->
-      <v-row v-if="showFullCard" class="mt-1">
+      <v-row
+        v-if="showFullCard"
+        class="mt-1"
+      >
         <!-- Groupe d'action de gauche -->
         <v-col class="pl-1">
           <v-btn
