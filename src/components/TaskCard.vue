@@ -244,7 +244,7 @@
             density="comfortable"
             icon
             variant="flat"
-            @click="create ? task.value = JSON.parse(JSON.stringify(emptyTask)) : deleteTask()"
+            @click="create ? task = JSON.parse(JSON.stringify(emptyTask)) : deleteTask()"
           >
             <v-icon>mdi-delete-outline</v-icon>
             <v-tooltip
