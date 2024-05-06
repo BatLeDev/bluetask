@@ -294,6 +294,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  edit: {
+    type: Boolean,
+    default: false
+  },
   // The task to edit
   taskId: {
     type: String,
@@ -314,8 +318,7 @@ const emptyTask = {
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
-const isOverlay = ref(false)
-const showFullCard = (field) => field.trim() !== '' || props.create || isOverlay.value
+const showFullCard = (field) => field.trim() !== '' || props.create || props.edit
 
 onMounted(async () => {
   if (!props.create) {
@@ -389,7 +392,6 @@ watch(
   },
   { deep: true }
 )
-
 </script>
 
 <style>

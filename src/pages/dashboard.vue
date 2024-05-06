@@ -19,15 +19,25 @@
         class="item"
         :key="task"
         :taskId="task.id"
+        @click="selectedTask = task.id"
       />
     </div>
+    <v-dialog
+      v-model="selectedTask"
+      max-width="500px"
+    >
+      <TaskCard
+        :taskId="selectedTask"
+        :edit=true
+      />
+    </v-dialog>
   </v-container>
 </template>
 
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { collection, query, where } from 'firebase/firestore'
-import { onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 import { VEmptyState } from 'vuetify/labs/VEmptyState'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
@@ -55,6 +65,9 @@ const tasks = useCollection(() =>
     : null,
 { ssrKey: 'task' }
 )
+
+const selectedTask = ref(null)
+
 </script>
 
 <style scoped>
