@@ -5,37 +5,39 @@
       width="100%"
       max-width="500"
       rounded="lg"
-      class="mx-auto px-6 pb-6"
-      :class="(task.title.trim() === '' && task.description.trim() === '' && !showFullCard('')) ? 'pt-10' : ''"
+      class="pa-5 pt-3"
     >
       <!-- Title -->
       <v-text-field
-        v-if="showFullCard(task.title)"
+        v-if="showFullCard || task.title.trim() !== ''"
         v-model="task.title"
         class="font-weight-black"
-        :class="showFullCard(task.description) ? 'mb-n8' : 'mb-n5'"
+        density="compact"
+        hide-details
         placeholder="Title"
         variant="plain"
-        :readonly="!showFullCard('')"
+        :readonly="!showFullCard"
       />
 
       <!-- Description -->
       <v-textarea
-        v-if="showFullCard(task.description)"
+        v-if="showFullCard || task.description.trim() !== ''"
         v-model="task.description"
         auto-grow
-        :class="(task.lines.length > 0 && !showFullCard('')) ? 'mb-n12' : 'mb-n5'"
+        density="compact"
+        hide-details
         placeholder="Description"
         rows="1"
         variant="plain"
-        :readonly="!showFullCard('')"
+        :readonly="!showFullCard"
       />
 
       <!-- Add new line -->
       <v-text-field
-        v-if="showFullCard('')"
+        v-if="showFullCard"
         v-model="newLine"
         density="compact"
+        hide-details
         placeholder="Add a new line"
         ref="newLineRef"
         variant="plain"
@@ -66,16 +68,16 @@
       <v-text-field
         v-for="(line, index) in task.lines"
         v-model="task.lines[index]"
-        class="mt-n6"
         density="compact"
+        hide-details
         prepend-icon="mdi-checkbox-blank-outline"
         variant="plain"
         :key="index"
-        :readonly="!showFullCard('')"
+        :readonly="!showFullCard"
         @click:prepend="check(line, true)"
       >
         <template
-          v-if="showFullCard('')"
+          v-if="showFullCard"
           v-slot:append
         >
           <v-btn
@@ -96,22 +98,23 @@
 
       <!-- Lines checked -->
       <v-divider
-        v-if="task.linesChecked.length > 0 && (task.lines.length > 0 || showFullCard(''))"
-        class="mb-6 mt-n4"
+        v-if="task.linesChecked.length > 0 && task.lines.length > 0"
+        class="mt-2"
       />
       <v-text-field
         v-for="(line, index) in task.linesChecked"
         v-model="task.linesChecked[index]"
-        class="mt-n6 line-through text-disabled font-italic"
+        class="line-through text-disabled font-italic"
         density="compact"
+        hide-details
         prepend-icon="mdi-checkbox-outline"
         variant="plain"
         :key="index"
-        :readonly="!showFullCard('')"
+        :readonly="!showFullCard"
         @click:prepend="check(line, false)"
       >
         <template
-          v-if="showFullCard('')"
+          v-if="showFullCard"
           v-slot:append
         >
           <v-btn
@@ -131,12 +134,9 @@
       </v-text-field>
 
       <!-- Actions -->
-      <v-row>
+      <v-row v-if="showFullCard">
         <!-- Groupe d'action de gauche -->
-        <v-col
-          v-if="showFullCard('')"
-          class="pa-0"
-        >
+        <v-col>
           <v-btn
             density="comfortable"
             icon
@@ -259,10 +259,7 @@
         <!-- Label menu -->
 
         <!-- Close/Create btn -->
-        <v-col
-          v-if="showFullCard('')"
-          class="d-flex align-center justify-end pa-0"
-        >
+        <v-col class="d-flex align-center justify-end">
           <v-btn
             v-if="create"
             color="primary"
@@ -285,7 +282,7 @@
 import { VConfirmEdit } from 'vuetify/labs/VConfirmEdit'
 import { getAuth } from 'firebase/auth'
 import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore'
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useFirestore } from 'vuefire'
 
 const props = defineProps({
@@ -318,7 +315,7 @@ const emptyTask = {
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
-const showFullCard = (field) => field.trim() !== '' || props.create || props.edit
+const showFullCard = computed(() => props.create || props.edit)
 
 onMounted(async () => {
   if (!props.create) {
