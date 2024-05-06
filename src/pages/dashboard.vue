@@ -61,4 +61,23 @@ const tasks = useCollection(() =>
 .items {
   column-count: 4;
 }
+
+/* TODO: Use vuetify for responsiveness */
+@media only screen and (max-width: 1200px) {
+  .items {
+    column-count: 3;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .items {
+    column-count: 2;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .items {
+    column-count: 1;
+  }
+}
 </style>
