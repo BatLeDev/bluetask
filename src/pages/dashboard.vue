@@ -29,6 +29,7 @@
       <TaskCard
         :taskId="selectedTask"
         :edit=true
+        @close="selectedTask = null"
       />
     </v-dialog>
   </v-container>
@@ -38,7 +39,6 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { collection, query, where } from 'firebase/firestore'
 import { onBeforeUnmount, ref } from 'vue'
-import { VEmptyState } from 'vuetify/labs/VEmptyState'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
 

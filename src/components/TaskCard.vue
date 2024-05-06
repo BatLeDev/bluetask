@@ -74,8 +74,7 @@
         variant="plain"
         :key="index"
         :readonly="!showFullCard"
-        @click:prepend="check(line, true)"
-        @click.stop
+        @click:prepend.stop="check(line, true)"
       >
         <template
           v-if="showFullCard"
@@ -112,8 +111,7 @@
         variant="plain"
         :key="index"
         :readonly="!showFullCard"
-        @click:prepend="check(line, false)"
-        @click.stop
+        @click:prepend.stop="check(line, false)"
       >
         <template
           v-if="showFullCard"
@@ -135,13 +133,58 @@
         </template>
       </v-text-field>
 
-      <!-- Actions -->
+      <!------ Data ------>
+      <!-- StartDate -->
+      <div
+        v-if="task.startDate"
+        class="mt-2"
+      >
+        <v-icon>mdi-calendar-start-outline</v-icon>
+        <v-chip
+          density="compact"
+          class="ml-3"
+        >
+          {{ date.format(task.startDate, 'keyboardDate') }}
+        </v-chip>
+      </div>
+
+      <!-- EndDate -->
+      <div
+        v-if="task.endDate"
+        class="mt-2"
+      >
+        <v-icon>mdi-calendar-end-outline</v-icon>
+        <v-chip
+          density="compact"
+          class="ml-3"
+        >
+          {{ date.format(task.endDate, 'keyboardDate') }}
+        </v-chip>
+      </div>
+
+      <!-- Priority -->
+      <div
+        v-if="task.priority > -1"
+        class="mt-2"
+      >
+        <v-icon>mdi-flag-outline</v-icon>
+        <v-chip
+          :color="['success', 'warning', 'error'][task.priority]"
+          density="compact"
+          class="ml-3"
+        >
+          {{ ['Low', 'Medium', 'High'][task.priority] }}
+        </v-chip>
+      </div>
+
+      <!-- Actions (set data)-->
       <v-row
         v-if="showFullCard"
         class="mt-1"
       >
         <!-- Groupe d'action de gauche -->
         <v-col class="pl-1">
+          <!-- StartDate -->
           <v-btn
             density="comfortable"
             icon
@@ -157,11 +200,14 @@
               activator="parent"
               :close-on-content-click="false"
             >
-              <v-confirm-edit v-model="task.startDate">
+              <v-confirm-edit
+                v-model="task.startDate"
+                @save="startDateMenu.isActive = false"
+              >
                 <template v-slot:default="{ model: proxyModel, actions }">
                   <v-date-picker v-model="proxyModel.value">
                     <template v-slot:actions>
-                      <component :is="actions"></component>
+                      <component :is="actions" />
                     </template>
                   </v-date-picker>
                 </template>
@@ -169,6 +215,7 @@
             </v-menu>
           </v-btn>
 
+          <!-- EndDate -->
           <v-btn
             density="comfortable"
             icon
@@ -196,6 +243,7 @@
             </v-menu>
           </v-btn>
 
+          <!-- Priority -->
           <v-btn
             density="comfortable"
             icon
@@ -212,35 +260,14 @@
               location="bottom center"
             >
               <v-btn
-                @click="task.priority = 0"
-                class="my-2"
-                color="success"
-                density="compact"
-                rounded="pill"
-                text="Low"
-              />
-              <v-btn
-                @click="task.priority = 1"
+                v-for="priority in [0, 1, 2]"
+                :key="priority"
                 class="mb-2"
-                color="warning"
                 density="compact"
                 rounded="pill"
-                text="Medium"
-              />
-              <v-btn
-                @click="task.priority = 2"
-                class="mb-2"
-                color="error"
-                density="compact"
-                rounded="pill"
-                text="High"
-              />
-              <v-btn
-                @click="task.priority = -1"
-                color="grey"
-                density="compact"
-                rounded="pill"
-                text="Not Defined"
+                :color="['success', 'warning', 'error'][priority]"
+                :text="['Low', 'Medium', 'High'][priority]"
+                @click="task.priority = priority"
               />
             </v-menu>
           </v-btn>
@@ -284,11 +311,11 @@
 </template>
 
 <script setup>
-import { VConfirmEdit } from 'vuetify/labs/VConfirmEdit'
 import { getAuth } from 'firebase/auth'
 import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useFirestore } from 'vuefire'
+import { useDate } from 'vuetify'
 
 const props = defineProps({
   // If true, the card will be in create mode
@@ -307,7 +334,9 @@ const props = defineProps({
   }
 })
 
+const date = useDate()
 const db = useFirestore()
+
 const emptyTask = {
   title: '',
   description: '',
