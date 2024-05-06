@@ -134,9 +134,9 @@
       </v-text-field>
 
       <!-- Actions -->
-      <v-row v-if="showFullCard">
+      <v-row v-if="showFullCard" class="mt-1">
         <!-- Groupe d'action de gauche -->
-        <v-col>
+        <v-col class="pl-1">
           <v-btn
             density="comfortable"
             icon
