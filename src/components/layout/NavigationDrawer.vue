@@ -15,18 +15,21 @@
         title="Tasks"
         value="tasks"
         rounded="e-pill"
+        @click="router.push('/dashboard/#all')"
       />
       <v-list-item
         prepend-icon="mdi-inbox-arrow-down-outline"
-        title="Archived"
-        value="archived"
+        title="Archive"
+        value="archive"
         rounded="e-pill"
+        @click="router.push('/dashboard/#archive')"
       />
       <v-list-item
         prepend-icon="mdi-trash-can-outline"
         title="Trash"
         value="trash"
         rounded="e-pill"
+        @click="router.push('/dashboard/#trash')"
       />
 
       <v-divider></v-divider>
@@ -38,6 +41,7 @@
         :title="label.title"
         :value="label.title"
         rounded="e-pill"
+        @click="router.push(`/dashboard/#label/${label.title}`)"
       />
       <v-list-item
         prepend-icon="mdi-plus"
@@ -60,6 +64,9 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   rail: {

@@ -10,13 +10,13 @@
       draggable="false"
       max-width="50"
       contain
-      @click="isLogged ? router.push('/dashboard') : router.push('/')"
+      @click="isLogged ? router.push('/dashboard/#all') : router.push('/')"
     />
     <v-app-bar-title
       text="BlueTask"
       class="text-lg-h5 font-weight-bold ml-2"
       style="user-select: none;"
-      @click="isLogged ? router.push('/dashboard') : router.push('/')"
+      @click="isLogged ? router.push('/dashboard/#all') : router.push('/')"
     />
 
     <v-btn

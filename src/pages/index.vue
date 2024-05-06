@@ -78,7 +78,7 @@ const router = useRouter()
 // For user who are already logged in
 const authListener = onAuthStateChanged(getAuth(), (user) => {
   if (user) {
-    router.push('/dashboard')
+    router.push('/dashboard/#all')
   }
 })
 

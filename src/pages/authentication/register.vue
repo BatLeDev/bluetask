@@ -115,7 +115,7 @@ const passwordMatch = (v) => v === password.value || 'Passwords do not match'
 const register = () => {
   createUserWithEmailAndPassword(getAuth(), email.value, password.value)
     .then(() => {
-      router.push('/dashboard')
+      router.push('/dashboard/#all')
     })
     .catch((error) => {
       console.log(error.code)
@@ -138,7 +138,7 @@ const register = () => {
 const signInWithGoogle = () => {
   signInWithPopup(getAuth(), new GoogleAuthProvider())
     .then(() => {
-      router.push('/dashboard')
+      router.push('/dashboard/#all')
     })
     .catch((error) => {
       console.log(error)
@@ -148,7 +148,7 @@ const signInWithGoogle = () => {
 // For user who are already logged in
 const authListener = onAuthStateChanged(getAuth(), (user) => {
   if (user) {
-    router.push('/dashboard')
+    router.push('/dashboard/#all')
   }
 })
 

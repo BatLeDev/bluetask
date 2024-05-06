@@ -102,7 +102,7 @@ const required = (v) => !!v || 'This field is required'
 const login = () => {
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then(() => {
-      router.push('/dashboard')
+      router.push('/dashboard/#all')
     })
     .catch((error) => {
       console.log(error.code)
@@ -128,7 +128,7 @@ const login = () => {
 const signInWithGoogle = async () => {
   signInWithPopup(getAuth(), new GoogleAuthProvider())
     .then(() => {
-      router.push('/dashboard')
+      router.push('/dashboard/#all')
     })
     .catch((error) => {
       console.log(error)
@@ -138,7 +138,7 @@ const signInWithGoogle = async () => {
 // For user who are already logged in
 const authListener = onAuthStateChanged(getAuth(), (user) => {
   if (user) {
-    router.push('/dashboard')
+    router.push('/dashboard/#all')
   }
 })
 

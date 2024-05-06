@@ -38,7 +38,7 @@
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { collection, query, where } from 'firebase/firestore'
-import { onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
 
@@ -56,17 +56,36 @@ onBeforeUnmount(() => {
   authListener()
 })
 
+const selectedTask = ref(null)
+const filterStatus = computed(() => {
+  switch (router.currentRoute.value.hash.slice(1)) {
+    case 'all':
+      return 'active'
+    case 'archive':
+      return 'archived'
+    case 'trash':
+      return 'deleted'
+    default:
+      return 'active'
+  }
+})
+const filterLabel = computed(() => {
+  return router.currentRoute.value.hash.startsWith('#label/')
+    ? router.currentRoute.value.hash.replace('#label/', '')
+    : null
+})
+
 const tasks = useCollection(() =>
   user.value
     ? query(
       collection(db, 'tasks'),
-      where('userId', '==', user.value.uid)
+      where('userId', '==', user.value.uid),
+      where('status', '==', filterStatus.value),
+      where('labels', 'array-contains', filterLabel.value || '')
     )
     : null,
 { ssrKey: 'task' }
 )
-
-const selectedTask = ref(null)
 
 </script>
 

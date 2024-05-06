@@ -344,7 +344,8 @@ const emptyTask = {
   endDate: undefined,
   priority: -1,
   lines: [],
-  linesChecked: []
+  linesChecked: [],
+  labels: ['']
 }
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
@@ -376,7 +377,8 @@ const createTask = async () => {
   )
   await addDoc(collection(db, 'tasks'), {
     ...cleanTask,
-    userId: user.uid
+    userId: user.uid,
+    status: 'active'
   })
   task.value = JSON.parse(JSON.stringify(emptyTask)) // Clear the form
 }
