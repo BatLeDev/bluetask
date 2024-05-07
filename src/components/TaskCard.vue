@@ -204,18 +204,10 @@
               activator="parent"
               :close-on-content-click="false"
             >
-              <v-confirm-edit v-model="task.startDate">
-                <template v-slot:default="{ model: proxyModel, actions }">
-                  <v-date-picker
-                    v-model="proxyModel.value"
-                    show-adjacent-months
-                  >
-                    <template v-slot:actions>
-                      <component :is="actions" />
-                    </template>
-                  </v-date-picker>
-                </template>
-              </v-confirm-edit>
+              <v-date-picker
+                v-model="task.startDate"
+                show-adjacent-months
+              />
             </v-menu>
           </v-btn>
 
@@ -235,19 +227,11 @@
               activator="parent"
               :close-on-content-click="false"
             >
-              <v-confirm-edit v-model="task.endDate">
-                <template v-slot:default="{ model: proxyModel, actions }">
-                  <v-date-picker
-                    v-model="proxyModel.value"
-                    show-adjacent-months
-                    :min="task.startDate"
-                  >
-                    <template v-slot:actions>
-                      <component :is="actions" />
-                    </template>
-                  </v-date-picker>
-                </template>
-              </v-confirm-edit>
+              <v-date-picker
+                v-model="task.endDate"
+                show-adjacent-months
+                :min="task.startDate"
+              />
             </v-menu>
           </v-btn>
 
@@ -296,22 +280,12 @@
               activator="parent"
               :close-on-content-click="false"
             >
-              <v-confirm-edit v-model="task.color">
-                <template v-slot:default="{ model: proxyModel, actions }">
-                  <v-card>
-                    <v-color-picker
-                      v-model="proxyModel.value"
-                      show-swatches
-                      elevation="0"
-                      rounded="0"
-                    />
-                    <template v-slot:actions>
-                      <v-spacer />
-                      <component :is="actions" />
-                    </template>
-                  </v-card>
-                </template>
-              </v-confirm-edit>
+              <v-color-picker
+                v-model="task.color"
+                show-swatches
+                elevation="0"
+                rounded="0"
+              />
             </v-menu>
           </v-btn>
 
