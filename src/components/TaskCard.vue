@@ -143,6 +143,8 @@
         <v-chip
           density="compact"
           class="ml-3"
+          closable
+          @click:close="task.startDate = undefined"
         >
           {{ date.format(task.startDate, 'keyboardDate') }}
         </v-chip>
@@ -157,6 +159,8 @@
         <v-chip
           density="compact"
           class="ml-3"
+          closable
+          @click:close="task.endDate = undefined"
         >
           {{ date.format(task.endDate, 'keyboardDate') }}
         </v-chip>
@@ -200,12 +204,12 @@
               activator="parent"
               :close-on-content-click="false"
             >
-              <v-confirm-edit
-                v-model="task.startDate"
-                @save="startDateMenu.isActive = false"
-              >
+              <v-confirm-edit v-model="task.startDate">
                 <template v-slot:default="{ model: proxyModel, actions }">
-                  <v-date-picker v-model="proxyModel.value">
+                  <v-date-picker
+                    v-model="proxyModel.value"
+                    show-adjacent-months
+                  >
                     <template v-slot:actions>
                       <component :is="actions" />
                     </template>
@@ -233,7 +237,11 @@
             >
               <v-confirm-edit v-model="task.endDate">
                 <template v-slot:default="{ model: proxyModel, actions }">
-                  <v-date-picker v-model="proxyModel.value">
+                  <v-date-picker
+                    v-model="proxyModel.value"
+                    show-adjacent-months
+                    :min="task.startDate"
+                  >
                     <template v-slot:actions>
                       <component :is="actions"></component>
                     </template>
@@ -356,6 +364,8 @@ onMounted(async () => {
   if (!props.create) {
     const taskDocument = await getDoc(doc(collection(db, 'tasks'), props.taskId))
     task.value = taskDocument.data()
+    task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
+    task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
   }
 })
 
@@ -411,6 +421,7 @@ const check = (line, checked) => {
  */
 const deleteTask = async () => {
   await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
+  this.$emit('close')
 }
 
 /**
