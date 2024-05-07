@@ -243,7 +243,7 @@
                     :min="task.startDate"
                   >
                     <template v-slot:actions>
-                      <component :is="actions"></component>
+                      <component :is="actions" />
                     </template>
                   </v-date-picker>
                 </template>
@@ -280,6 +280,42 @@
             </v-menu>
           </v-btn>
 
+          <!-- Color -->
+          <v-btn
+            density="comfortable"
+            icon
+            variant="flat"
+          >
+            <v-icon>mdi-palette-outline</v-icon>
+            <v-tooltip
+              activator="parent"
+              location="bottom"
+              text="Color"
+            />
+            <v-menu
+              activator="parent"
+              :close-on-content-click="false"
+            >
+              <v-confirm-edit v-model="task.color">
+                <template v-slot:default="{ model: proxyModel, actions }">
+                  <v-card>
+                    <v-color-picker
+                      v-model="proxyModel.value"
+                      show-swatches
+                      elevation="0"
+                      rounded="0"
+                    />
+                    <template v-slot:actions>
+                      <v-spacer />
+                      <component :is="actions" />
+                    </template>
+                  </v-card>
+                </template>
+              </v-confirm-edit>
+            </v-menu>
+          </v-btn>
+
+          <!-- Delete -->
           <v-btn
             density="comfortable"
             icon
@@ -353,7 +389,8 @@ const emptyTask = {
   priority: -1,
   lines: [],
   linesChecked: [],
-  labels: ['']
+  labels: [''],
+  color: undefined
 }
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
