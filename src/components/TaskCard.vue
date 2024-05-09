@@ -6,15 +6,18 @@
       max-width="500"
       rounded="lg"
       class="pa-5 pt-3"
+      :color="task.color || ''"
     >
       <!-- Title -->
-      <v-text-field
+      <v-textarea
         v-if="showFullCard || task.title.trim() !== ''"
         v-model="task.title"
+        auto-grow
         class="font-weight-black"
         density="compact"
         hide-details
         placeholder="Title"
+        rows="1"
         variant="plain"
         :readonly="!showFullCard"
       />
@@ -33,13 +36,15 @@
       />
 
       <!-- Add new line -->
-      <v-text-field
+      <v-textarea
         v-if="showFullCard"
         v-model="newLine"
+        auto-grow
         density="compact"
         hide-details
         placeholder="Add a new line"
         ref="newLineRef"
+        rows="1"
         variant="plain"
         :prepend-icon="newLine ? 'mdi-checkbox-blank-outline' : 'mdi-plus'"
         @keyup.enter="$event.target.blur()"
@@ -54,7 +59,7 @@
             icon="mdi-plus"
             id="add-line"
             size="small"
-            variant="flat"
+            variant="text"
           />
           <v-tooltip
             location="bottom"
@@ -62,15 +67,17 @@
             text="Add"
           />
         </template>
-      </v-text-field>
+      </v-textarea>
 
       <!-- Lines not checked -->
-      <v-text-field
+      <v-textarea
         v-for="(line, index) in task.lines"
         v-model="task.lines[index]"
+        auto-grow
         density="compact"
         hide-details
         prepend-icon="mdi-checkbox-blank-outline"
+        rows="1"
         variant="plain"
         :key="index"
         :readonly="!showFullCard"
@@ -85,7 +92,7 @@
             icon="mdi-close"
             density="comfortable"
             size="small"
-            variant="flat"
+            variant="text"
             @click="task.lines.splice(index, 1)"
           />
           <v-tooltip
@@ -94,20 +101,22 @@
             text="Delete"
           />
         </template>
-      </v-text-field>
+      </v-textarea>
 
       <!-- Lines checked -->
       <v-divider
         v-if="task.linesChecked.length > 0 && task.lines.length > 0"
         class="mt-2"
       />
-      <v-text-field
+      <v-textarea
         v-for="(line, index) in task.linesChecked"
         v-model="task.linesChecked[index]"
+        auto-grow
         class="line-through text-disabled font-italic"
         density="compact"
         hide-details
         prepend-icon="mdi-checkbox-outline"
+        rows="1"
         variant="plain"
         :key="index"
         :readonly="!showFullCard"
@@ -122,7 +131,7 @@
             icon="mdi-close"
             density="comfortable"
             size="small"
-            variant="flat"
+            variant="text"
             @click="task.linesChecked.splice(index, 1)"
           />
           <v-tooltip
@@ -131,7 +140,7 @@
             text="Delete"
           />
         </template>
-      </v-text-field>
+      </v-textarea>
 
       <!------ Data ------>
       <!-- StartDate -->
@@ -176,6 +185,8 @@
           :color="['success', 'warning', 'error'][task.priority]"
           density="compact"
           class="ml-3"
+          closable
+          @click:close="task.priority = -1"
         >
           {{ ['Low', 'Medium', 'High'][task.priority] }}
         </v-chip>
@@ -192,7 +203,7 @@
           <v-btn
             density="comfortable"
             icon
-            variant="flat"
+            variant="text"
           >
             <v-icon>mdi-calendar-start-outline</v-icon>
             <v-tooltip
@@ -215,7 +226,7 @@
           <v-btn
             density="comfortable"
             icon
-            variant="flat"
+            variant="text"
           >
             <v-icon>mdi-calendar-end-outline</v-icon>
             <v-tooltip
@@ -239,7 +250,7 @@
           <v-btn
             density="comfortable"
             icon
-            variant="flat"
+            variant="text"
           >
             <v-icon>mdi-flag-outline</v-icon>
             <v-tooltip
@@ -268,7 +279,7 @@
           <v-btn
             density="comfortable"
             icon
-            variant="flat"
+            variant="text"
           >
             <v-icon>mdi-palette-outline</v-icon>
             <v-tooltip
@@ -280,20 +291,35 @@
               activator="parent"
               :close-on-content-click="false"
             >
-              <v-color-picker
-                v-model="task.color"
-                show-swatches
-                elevation="0"
-                rounded="0"
-              />
+              <v-card>
+                <v-color-picker
+                  v-model="task.color"
+                  :swatches="swatches"
+                  show-swatches
+                  elevation="0"
+                  class="mb-n4"
+                />
+                <v-card-actions>
+                  <v-btn
+                    color="error"
+                    @click="task.color = undefined"
+                  >
+                    Clear
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
             </v-menu>
           </v-btn>
+
+          <!-- Label menu -->
+          <!-- Archive btn-->
 
           <!-- Delete -->
           <v-btn
             density="comfortable"
             icon
-            variant="flat"
+            variant="text"
+            color="parent"
             @click="create ? task = JSON.parse(JSON.stringify(emptyTask)) : deleteTask()"
           >
             <v-icon>mdi-delete-outline</v-icon>
@@ -304,9 +330,6 @@
             />
           </v-btn>
         </v-col>
-
-        <!-- Color menu -->
-        <!-- Label menu -->
 
         <!-- Close/Create btn -->
         <v-col class="d-flex align-center justify-end">
@@ -352,19 +375,29 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['close'])
+
 const date = useDate()
 const db = useFirestore()
+
+const swatches = [
+  ['#FFC164', '#E47676'],
+  ['#FFFF99', '#7A73F0'],
+  ['#CCFFFF', '#CC99FF'],
+  ['#99CCFF', '#FFCCFF'],
+  ['#8FE96C', '#FFCCCC']
+]
 
 const emptyTask = {
   title: '',
   description: '',
-  startDate: undefined,
-  endDate: undefined,
+  startDate: null,
+  endDate: null,
   priority: -1,
   lines: [],
   linesChecked: [],
   labels: [''],
-  color: undefined
+  color: null
 }
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
@@ -432,7 +465,7 @@ const check = (line, checked) => {
  */
 const deleteTask = async () => {
   await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
-  this.$emit('close')
+  emit('close')
 }
 
 /**
@@ -442,7 +475,10 @@ watch(
   task,
   async () => {
     if (!props.create) {
-      await updateDoc(doc(collection(db, 'tasks'), props.taskId), task.value)
+      const cleanTask = Object.fromEntries(
+        Object.entries(task.value).filter(([, value]) => value !== undefined)
+      )
+      await updateDoc(doc(collection(db, 'tasks'), props.taskId), cleanTask)
     }
   },
   { deep: true }
