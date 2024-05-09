@@ -47,7 +47,8 @@
         rows="1"
         variant="plain"
         :prepend-icon="newLine ? 'mdi-checkbox-blank-outline' : 'mdi-plus'"
-        @keyup.enter="$event.target.blur()"
+        @keydown.enter.exact.prevent="$event.target.blur()"
+        @keydown.enter.shift.exact.prevent="newLine += '\n'"
         @blur="addTaskLine()"
       >
         <template
@@ -198,7 +199,10 @@
         class="mt-1"
       >
         <!-- Groupe d'action de gauche -->
-        <v-col class="pl-1">
+        <v-col
+          class="pl-1"
+          cols="8"
+        >
           <!-- StartDate -->
           <v-btn
             density="comfortable"
@@ -260,7 +264,7 @@
             />
             <v-menu
               activator="parent"
-              location="bottom center"
+              location="bottom"
             >
               <v-btn
                 v-for="priority in [0, 1, 2]"
@@ -313,26 +317,43 @@
 
           <!-- Label menu -->
           <!-- Archive btn-->
+          <v-btn
+            v-if="!create"
+            density="comfortable"
+            icon
+            variant="text"
+            @click="task.status = task.status !== 'archived' ? 'archived' : 'active'"
+          >
+            <v-icon v-if="task.status === 'active'">mdi-archive-arrow-down-outline</v-icon>
+            <v-icon v-else>mdi-archive-arrow-up-outline</v-icon>
+            <v-tooltip
+              activator="parent"
+              location="bottom"
+              :text="task.status !== 'archived' ? 'Archive' : 'Unarchive'"
+            />
+          </v-btn>
 
           <!-- Delete -->
           <v-btn
             density="comfortable"
             icon
             variant="text"
-            color="parent"
             @click="create ? task = JSON.parse(JSON.stringify(emptyTask)) : deleteTask()"
           >
             <v-icon>mdi-delete-outline</v-icon>
             <v-tooltip
               activator="parent"
               location="bottom"
-              :text="create ? 'Clear' : 'Delete'"
+              :text="create ? 'Clear' : task.status === 'deleted' ? 'Delete permanently' : 'Delete'"
             />
           </v-btn>
         </v-col>
 
         <!-- Close/Create btn -->
-        <v-col class="d-flex align-center justify-end">
+        <v-col
+          class="d-flex align-center justify-end"
+          cols="4"
+        >
           <v-btn
             v-if="create"
             color="primary"
@@ -464,7 +485,11 @@ const check = (line, checked) => {
  * Delete the task from the database by its ID
  */
 const deleteTask = async () => {
-  await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
+  if (task.value.status === 'deleted') {
+    await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
+  } else {
+    await updateDoc(doc(collection(db, 'tasks'), props.taskId), { status: 'deleted' })
+  }
   emit('close')
 }
 
