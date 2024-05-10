@@ -1,6 +1,9 @@
 <template>
   <v-container>
-    <TaskCard create />
+    <TaskCard
+      v-if="filterStatus === 'active' || filterLabel !== null"
+      create
+    />
     <v-empty-state
       v-if="tasks.length === 0"
       title="No tasks"

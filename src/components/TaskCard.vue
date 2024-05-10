@@ -354,8 +354,8 @@
             variant="text"
             @click="task.status = task.status !== 'archived' ? 'archived' : 'active'"
           >
-            <v-icon v-if="task.status === 'active'">mdi-archive-arrow-down-outline</v-icon>
-            <v-icon v-else>mdi-archive-arrow-up-outline</v-icon>
+            <v-icon v-if="task.status === 'active'">mdi-inbox-arrow-down-outline</v-icon>
+            <v-icon v-else>mdi-inbox-arrow-up-outline</v-icon>
             <v-tooltip
               activator="parent"
               location="bottom"
@@ -380,9 +380,7 @@
         </v-col>
 
         <!-- Close/Create btn -->
-        <v-col
-          class="d-flex align-center justify-end"
-        >
+        <v-col class="d-flex align-center justify-end">
           <v-btn
             v-if="create"
             color="primary"

@@ -63,10 +63,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { getAuth } from 'firebase/auth'
+import { collection, doc } from 'firebase/firestore'
+import { computed, ref } from 'vue'
+import { useDocument, useFirestore } from 'vuefire'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const db = useFirestore()
 
 const props = defineProps({
   rail: {
@@ -75,15 +79,11 @@ const props = defineProps({
   }
 })
 
+const userId = getAuth().currentUser.uid
+const usersDocRef = computed(() => doc(collection(db, 'users'), userId))
+const userDoc = useDocument(usersDocRef)
+const labels = computed(() => userDoc.value?.labels || [])
 const drawer = ref(true)
-
-// Some randoms labels
-const labels = ref([
-  { icon: 'mdi-food-apple', title: 'Food' },
-  { icon: 'mdi-briefcase', title: 'Work' },
-  { icon: 'mdi-account', title: 'Personal' },
-  { icon: 'mdi-school', title: 'Study' }
-])
 
 </script>
 
