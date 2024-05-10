@@ -31,9 +31,7 @@
         rounded="e-pill"
         @click="router.push('/dashboard/#trash')"
       />
-
-      <v-divider></v-divider>
-      <!-- <v-list-subheader>Labels</v-list-subheader> -->
+      <v-divider/>
       <v-list-item
         v-for="label in labels"
         :key="label.title"
@@ -44,9 +42,9 @@
         @click="router.push(`/dashboard/#label/${label.title}`)"
       />
       <v-list-item
-        prepend-icon="mdi-plus"
-        title="Add label"
-        value="add-label"
+        prepend-icon="mdi-tag-edit-outline"
+        title="Edit labels"
+        value="edit-labels"
         rounded="e-pill"
       >
         <LabelsSettings :userId="userId" />

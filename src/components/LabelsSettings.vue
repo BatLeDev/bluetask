@@ -6,7 +6,7 @@
   >
     <v-card>
       <v-card-title>Labels</v-card-title>
-      <v-card-text>
+      <v-card-text class="py-0">
         <v-chip
           v-for="label in userDoc.labels"
           :key="label"
@@ -22,6 +22,8 @@
         <v-text-field
           v-model="newLabel"
           label="New label"
+          variant="plain"
+          hide-details
           prepend-inner-icon="mdi-tag-plus-outline"
           append-icon="mdi-plus"
           @click:append="addLabel"
