@@ -78,8 +78,7 @@ const filterLabel = computed(() => {
 const tasks = useCollection(() =>
   user.value
     ? query(
-      collection(db, 'tasks'),
-      where('userId', '==', user.value.uid),
+      collection(db, 'users', user.value.uid, 'tasks'),
       where('status', '==', filterStatus.value),
       where('labels', 'array-contains', filterLabel.value || '')
     )

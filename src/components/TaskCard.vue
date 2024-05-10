@@ -454,9 +454,12 @@ const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
 const showFullCard = computed(() => props.create || props.edit)
 
+const user = getAuth().currentUser
+const tasksCollection = collection(db, 'users', user.uid, 'tasks')
+
 onMounted(async () => {
   if (!props.create) {
-    const taskDocument = await getDoc(doc(collection(db, 'tasks'), props.taskId))
+    const taskDocument = await getDoc(doc(collection(db, 'users', user.uid, 'tasks'), props.taskId))
     task.value = taskDocument.data()
     task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
     task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
@@ -467,7 +470,6 @@ onMounted(async () => {
  * Create the new task in the database and clear the form
  */
 const createTask = async () => {
-  const user = getAuth().currentUser
   if (!user) return
   if (
     task.value.title.trim() === '' &&
@@ -479,9 +481,8 @@ const createTask = async () => {
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
   )
-  await addDoc(collection(db, 'tasks'), {
+  await addDoc(tasksCollection, {
     ...cleanTask,
-    userId: user.uid,
     status: 'active'
   })
   task.value = JSON.parse(JSON.stringify(emptyTask)) // Clear the form
@@ -515,9 +516,9 @@ const check = (line, checked) => {
  */
 const deleteTask = async () => {
   if (task.value.status === 'deleted') {
-    await deleteDoc(doc(collection(db, 'tasks'), props.taskId))
+    await deleteDoc(doc(tasksCollection, props.taskId))
   } else {
-    await updateDoc(doc(collection(db, 'tasks'), props.taskId), { status: 'deleted' })
+    await updateDoc(doc(tasksCollection, props.taskId), { status: 'deleted' })
   }
   emit('close')
 }
@@ -532,7 +533,7 @@ watch(
       const cleanTask = Object.fromEntries(
         Object.entries(task.value).filter(([, value]) => value !== undefined)
       )
-      await updateDoc(doc(collection(db, 'tasks'), props.taskId), cleanTask)
+      await updateDoc(doc(tasksCollection, props.taskId), cleanTask)
     }
   }
 )

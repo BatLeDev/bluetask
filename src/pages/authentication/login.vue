@@ -89,10 +89,14 @@
 
 <script setup>
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import { setDoc, doc, getDoc } from 'firebase/firestore'
 import { onBeforeUnmount, ref } from 'vue'
+import { useFirestore } from 'vuefire'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const db = useFirestore()
+
 const errMsg = ref()
 const email = ref('')
 const password = ref('')
@@ -127,7 +131,18 @@ const login = () => {
 
 const signInWithGoogle = async () => {
   signInWithPopup(getAuth(), new GoogleAuthProvider())
-    .then(() => {
+    .then(async () => {
+      const currentUser = getAuth().currentUser
+      const docRef = doc(db, 'users', currentUser.uid)
+      const docSnap = await getDoc(docRef)
+
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
+          email: currentUser.email,
+          labels: [],
+          createdAt: new Date()
+        })
+      }
       router.push('/dashboard/#all')
     })
     .catch((error) => {

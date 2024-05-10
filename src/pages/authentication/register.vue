@@ -99,10 +99,14 @@
 
 <script setup>
 import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
 import { onBeforeUnmount, ref } from 'vue'
+import { useFirestore } from 'vuefire'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const db = useFirestore()
+
 const form = ref(false)
 const errMsg = ref()
 const email = ref('')
@@ -114,7 +118,13 @@ const passwordMatch = (v) => v === password.value || 'Passwords do not match'
 
 const register = () => {
   createUserWithEmailAndPassword(getAuth(), email.value, password.value)
-    .then(() => {
+    .then(async () => {
+      const currentUser = getAuth().currentUser
+      await setDoc(doc(db, 'users', currentUser.uid), {
+        email: currentUser.email,
+        labels: [],
+        createdAt: new Date()
+      })
       router.push('/dashboard/#all')
     })
     .catch((error) => {
@@ -137,7 +147,13 @@ const register = () => {
 
 const signInWithGoogle = () => {
   signInWithPopup(getAuth(), new GoogleAuthProvider())
-    .then(() => {
+    .then(async () => {
+      const currentUser = getAuth().currentUser
+      await setDoc(doc(db, 'users', currentUser.uid), {
+        email: currentUser.email,
+        labels: [],
+        createdAt: new Date()
+      })
       router.push('/dashboard/#all')
     })
     .catch((error) => {
