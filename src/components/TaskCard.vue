@@ -143,6 +143,36 @@
         </template>
       </v-textarea>
 
+      <!-- Progress bar -->
+      <v-row
+        v-if="task.lines.length > 0 || task.linesChecked.length > 0"
+        class="mt-2 align-center"
+      >
+        <v-col>
+          <v-progress-linear
+            cols="auto"
+            color="success"
+            height="12"
+            min="0"
+            rounded
+            :max="task.lines.length + task.linesChecked.length"
+            :model-value="task.linesChecked.length"
+          />
+        </v-col>
+        <v-col cols="auto">
+          {{
+          Math.round(task.linesChecked.length
+          /
+          (task.lines.length
+          +
+          task.linesChecked.length)
+          *
+          100)
+          }}
+          %
+        </v-col>
+      </v-row>
+
       <!------ Data ------>
       <!-- StartDate -->
       <div
@@ -201,7 +231,7 @@
         <!-- Groupe d'action de gauche -->
         <v-col
           class="pl-1"
-          cols="8"
+          cols="auto"
         >
           <!-- StartDate -->
           <v-btn
@@ -352,7 +382,6 @@
         <!-- Close/Create btn -->
         <v-col
           class="d-flex align-center justify-end"
-          cols="4"
         >
           <v-btn
             v-if="create"
@@ -505,8 +534,7 @@ watch(
       )
       await updateDoc(doc(collection(db, 'tasks'), props.taskId), cleanTask)
     }
-  },
-  { deep: true }
+  }
 )
 </script>
 
