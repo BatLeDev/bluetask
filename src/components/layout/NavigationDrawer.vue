@@ -48,16 +48,18 @@
         title="Add label"
         value="add-label"
         rounded="e-pill"
-      />
+      >
+        <LabelsSettings :userId="userId" />
+      </v-list-item>
 
-      <v-divider v-if="labels.length"></v-divider>
+      <!-- <v-divider v-if="labels.length"></v-divider>
 
       <v-list-item
         prepend-icon="mdi-cog-outline"
         title="Settings"
         value="settings"
         rounded="e-pill"
-      />
+      /> -->
     </v-list>
   </v-navigation-drawer>
 </template>
