@@ -459,7 +459,7 @@ const tasksCollection = collection(db, 'users', user.uid, 'tasks')
 
 onMounted(async () => {
   if (!props.create) {
-    const taskDocument = await getDoc(doc(collection(db, 'users', user.uid, 'tasks'), props.taskId))
+    const taskDocument = await getDoc(doc(tasksCollection, props.taskId))
     task.value = taskDocument.data()
     task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
     task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
@@ -535,7 +535,8 @@ watch(
       )
       await updateDoc(doc(tasksCollection, props.taskId), cleanTask)
     }
-  }
+  },
+  { deep: true }
 )
 </script>
 
