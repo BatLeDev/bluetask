@@ -24,41 +24,41 @@
           label="New label"
           variant="plain"
           hide-details
-          append-icon="mdi-plus"
-          @click:append="addLabel"
+          prepend-inner-icon="mdi-tag-plus-outline"
           @keydown.enter="addLabel"
+        />
+
+        <v-text-field
+          v-model="newLabel.icon"
+          append="mdi-help-circle-outline"
+          hide-details
+          label="Custom icon"
+          placeholder="tag-outline"
+          prefix="mdi-"
+          prepend-inner-icon="mdi-tag-outline"
+          variant="plain"
         >
-          <template v-slot:prepend-inner>
-            <v-icon
-              class="cursor-pointer"
-              :icon="newLabel.icon === 'mdi-tag-outline' ? 'mdi-tag-plus-outline' : newLabel.icon"
-            />
-            <v-menu
-              v-model="iconSelector"
+          <template v-slot:append>
+            <v-icon @click="openIconReference">
+              mdi-help-circle-outline
+            </v-icon>
+            <v-tooltip
+              location="bottom"
               activator="parent"
-              location="center"
-              max-height="400"
-              max-width="400"
-              :close-on-content-click="false"
-            >
-              <v-infinite-scroll
-                @load="load"
-                height="400"
-              >
-                <v-list>
-                  <v-icon
-                    v-for="mdi in mdiList"
-                    :key="mdi"
-                    @click="newLabel.icon = mdi"
-                    :icon="mdi"
-                  />
-                </v-list>
-              </v-infinite-scroll>
-            </v-menu>
+              text="Open Material Design Icons website for icon reference."
+            />
           </template>
         </v-text-field>
+
       </v-card-text>
       <v-card-actions>
+        <v-btn
+          text
+          @click="addLabel"
+        >
+          Create
+        </v-btn>
+
         <v-btn
           text
           @click="dialog = false"
@@ -71,7 +71,6 @@
 </template>
 
 <script setup>
-import mdiFullList from '@/assets/mdiList.json'
 import { collection, doc, updateDoc } from 'firebase/firestore'
 import { ref } from 'vue'
 import { useDocument, useFirestore } from 'vuefire'
@@ -84,21 +83,24 @@ const db = useFirestore()
 const userDoc = useDocument(doc(collection(db, 'users'), props.userId))
 
 const dialog = ref(false)
-const iconSelector = ref(false)
-const mdiList = ref(mdiFullList.slice(0, 200))
 const newLabel = ref({
   title: '',
-  icon: 'mdi-tag-outline'
+  icon: 'tag-outline'
 })
 
 const addLabel = async () => {
-  if (newLabel.value) {
+  if (newLabel.value.title) {
+    if (!newLabel.value.icon) {
+      newLabel.value.icon = 'mdi-tag-outline'
+    } else if (!newLabel.value.icon.startsWith('mdi-')) {
+      newLabel.value.icon = `mdi-${newLabel.value.icon}`
+    }
     await updateDoc(doc(collection(db, 'users'), props.userId), {
       labels: [...userDoc.value.labels, newLabel.value]
     })
     newLabel.value = {
       title: '',
-      icon: 'mdi-tag-outline'
+      icon: 'tag-outline'
     }
   }
 }
@@ -109,11 +111,9 @@ const removeLabel = async (label) => {
   })
 }
 
-const load = ({ done }) => {
-  mdiList.value.push(...mdiFullList.slice(mdiList.value.length, mdiList.value.length + 200))
-  done('ok')
+const openIconReference = () => {
+  window.open('https://materialdesignicons.com/', '_blank');
 }
-
 </script>
 
 <style scoped></style>

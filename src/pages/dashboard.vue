@@ -3,6 +3,7 @@
     <TaskCard
       v-if="filterStatus === 'active' || filterLabel !== null"
       create
+      :label="filterLabel"
     />
     <v-empty-state
       v-if="tasks.length === 0"
@@ -97,13 +98,13 @@ const tasks = useCollection(() =>
 }
 
 /* TODO: Use vuetify for responsiveness */
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: 1100px) {
   .items {
     column-count: 3;
   }
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 800px) {
   .items {
     column-count: 2;
   }

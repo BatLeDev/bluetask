@@ -184,7 +184,7 @@
           density="compact"
           class="ml-3"
           closable
-          @click:close="task.startDate = undefined"
+          @click:close="task.startDate = null"
         >
           {{ date.format(task.startDate, 'keyboardDate') }}
         </v-chip>
@@ -200,7 +200,7 @@
           density="compact"
           class="ml-3"
           closable
-          @click:close="task.endDate = undefined"
+          @click:close="task.endDate = null"
         >
           {{ date.format(task.endDate, 'keyboardDate') }}
         </v-chip>
@@ -336,7 +336,7 @@
                 <v-card-actions>
                   <v-btn
                     color="error"
-                    @click="task.color = undefined"
+                    @click="task.color = null"
                   >
                     Clear
                   </v-btn>
@@ -420,6 +420,10 @@ const props = defineProps({
   taskId: {
     type: String,
     default: ''
+  }, 
+  label: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -461,6 +465,8 @@ onMounted(async () => {
     task.value = taskDocument.data()
     task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
     task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
+  } else {
+    task.value.labels = ['', props.label]
   }
 })
 
