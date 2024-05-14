@@ -1,7 +1,7 @@
 <template>
   <v-dialog
-    activator="parent"
     v-model="dialog"
+    activator="parent"
     max-width="500"
   >
     <v-card>
@@ -21,10 +21,10 @@
 
         <v-text-field
           v-model="newLabel.title"
-          label="New label"
-          variant="plain"
           hide-details
+          label="New label"
           prepend-inner-icon="mdi-tag-plus-outline"
+          variant="plain"
           @keydown.enter="addLabel"
         />
 
@@ -43,8 +43,8 @@
               mdi-help-circle-outline
             </v-icon>
             <v-tooltip
-              location="bottom"
               activator="parent"
+              location="bottom"
               text="Open Material Design Icons website for icon reference."
             />
           </template>
@@ -53,14 +53,12 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
-          text
           @click="addLabel"
         >
           Create
         </v-btn>
 
         <v-btn
-          text
           @click="dialog = false"
         >
           Close
@@ -105,6 +103,7 @@ const addLabel = async () => {
   }
 }
 
+// TODO remove labels in all tasks
 const removeLabel = async (label) => {
   await updateDoc(doc(collection(db, 'users'), props.userId), {
     labels: userDoc.value.labels.filter((l) => l.title !== label.title)

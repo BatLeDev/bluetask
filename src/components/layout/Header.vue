@@ -55,7 +55,6 @@
     v-if="isLogged"
     :rail
   />
-
 </template>
 
 <script setup>

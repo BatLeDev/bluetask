@@ -416,7 +416,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  // The task to edit
   taskId: {
     type: String,
     default: ''

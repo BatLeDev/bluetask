@@ -12,8 +12,9 @@
 </script>
 
 <style>
-  /* Add global styles here */
-  /* It's not the best place to put global styles, but it's the only way to do it with Vite */
+  /* Global styles */
+  /* TODO: move style to styles/style.scss*/
+  /* TODO: use poppins font */
 
   /* v-icon has an opacity when it is prepended in a list of items.
     ref: https://github.com/vuetifyjs/vuetify/issues/18760

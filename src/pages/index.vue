@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row
-      class="mx-2"
+      class="mx-10"
       align="center"
     >
       <v-col>
@@ -26,44 +26,6 @@
       <v-col class="d-none d-lg-block">
         <v-img src="@/assets/task-amico.svg" />
       </v-col>
-    </v-row>
-
-    <v-row justify="center">
-      <v-card
-        max-width="250"
-        class="mx-8 my-4 pa-2"
-        elevation="4"
-        rounded="lg"
-      >
-        <v-card-title class="text-h5 mb-2">Easy to use</v-card-title>
-        <v-card-text class="text-h6 font-weight-light">
-          Simplified chore lists with intuitive layout for seamless daily planning
-        </v-card-text>
-      </v-card>
-
-      <v-card
-        max-width="250"
-        class="mx-8 my-4 pa-2"
-        elevation="4"
-        rounded="lg"
-      >
-        <v-card-title class="text-h5 mb-2">Full Support</v-card-title>
-        <v-card-text class="text-h6 font-weight-light">
-          Empower your productivity with personalized task management guided by your rules
-        </v-card-text>
-      </v-card>
-
-      <v-card
-        max-width="250"
-        class="mx-8 my-4 pa-2"
-        elevation="4"
-        rounded="lg"
-      >
-        <v-card-title class="text-h5 mb-2">Never feel lost</v-card-title>
-        <v-card-text class="text-h6 font-weight-light">
-          Stay seamlessly connected to your tasks anytime, anywhere with our synced mobile app
-        </v-card-text>
-      </v-card>
     </v-row>
   </v-container>
 </template>

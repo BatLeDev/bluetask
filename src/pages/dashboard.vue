@@ -1,10 +1,12 @@
 <template>
   <v-container>
+    <!-- Create task card-->
     <TaskCard
       v-if="filterStatus === 'active' || filterLabel !== null"
       create
       :label="filterLabel"
     />
+    <!-- Empty state -->
     <v-empty-state
       v-if="tasks.length === 0"
       title="No tasks"
@@ -17,6 +19,7 @@
         />
       </template>
     </v-empty-state>
+    <!-- List of tasks -->
     <div class="items">
       <TaskCard
         v-for="task in tasks"
@@ -26,13 +29,14 @@
         @click="selectedTask = task.id"
       />
     </div>
+    <!-- Task dialog for editing -->
     <v-dialog
       v-model="selectedTask"
       max-width="500px"
     >
       <TaskCard
+        edit
         :taskId="selectedTask"
-        :edit=true
         @close="selectedTask = null"
       />
     </v-dialog>
@@ -50,17 +54,22 @@ const user = useCurrentUser()
 const router = useRouter()
 const db = useFirestore()
 
+// Redirect to login page if user is not authenticated
 const authListener = onAuthStateChanged(getAuth(), (user) => {
   if (!user) {
     router.push('/authentication/login')
   }
 })
 
+// Unsubscribe from auth listener when component is unmounted
 onBeforeUnmount(() => {
   authListener()
 })
 
+// The id of the task that is currently selected for editing
 const selectedTask = ref(null)
+
+// Filters tasks based on the current route
 const filterStatus = computed(() => {
   switch (router.currentRoute.value.hash.slice(1)) {
     case 'all':
@@ -79,6 +88,7 @@ const filterLabel = computed(() => {
     : null
 })
 
+// Fetch tasks based on the current user and filters
 const tasks = useCollection(() =>
   user.value
     ? query(
@@ -89,7 +99,6 @@ const tasks = useCollection(() =>
     : null,
 { ssrKey: 'task' }
 )
-
 </script>
 
 <style scoped>

@@ -13,21 +13,18 @@
       <v-list-item
         prepend-icon="mdi-checkbox-marked-circle-outline"
         title="Tasks"
-        value="tasks"
         rounded="e-pill"
         @click="router.push('/dashboard/#all')"
       />
       <v-list-item
         prepend-icon="mdi-inbox-arrow-down-outline"
         title="Archive"
-        value="archive"
         rounded="e-pill"
         @click="router.push('/dashboard/#archive')"
       />
       <v-list-item
         prepend-icon="mdi-trash-can-outline"
         title="Trash"
-        value="trash"
         rounded="e-pill"
         @click="router.push('/dashboard/#trash')"
       />
@@ -37,27 +34,17 @@
         :key="label.title"
         :prepend-icon="label.icon"
         :title="label.title"
-        :value="label.title"
         rounded="e-pill"
         @click="router.push(`/dashboard/#label/${label.title}`)"
       />
       <v-list-item
         prepend-icon="mdi-tag-edit-outline"
         title="Edit labels"
-        value="edit-labels"
         rounded="e-pill"
+        @click=""
       >
         <LabelsSettings :userId="userId" />
       </v-list-item>
-
-      <!-- <v-divider v-if="labels.length"></v-divider>
-
-      <v-list-item
-        prepend-icon="mdi-cog-outline"
-        title="Settings"
-        value="settings"
-        rounded="e-pill"
-      /> -->
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -84,7 +71,6 @@ const usersDocRef = computed(() => doc(collection(db, 'users'), userId))
 const userDoc = useDocument(usersDocRef)
 const labels = computed(() => userDoc.value?.labels || [])
 const drawer = ref(true)
-
 </script>
 
 <style scoped></style>
