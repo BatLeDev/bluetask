@@ -2,7 +2,7 @@
 
 # BlueTask - A TODO list app
 
-[![Logo](https://github.com/BatLeDev/bluetask-webapp/blob/master/src/assets/logo.png)](bluetask.batledev.com)
+[![Logo](https://github.com/BatLeDev/bluetask-webapp/blob/master/src/assets/logo.png)](http://bluetask.batledev.com)
 
 </div>
 
@@ -16,8 +16,6 @@
 
 ## Initial Project
 BlueTask started as a project for a web development course. The initial requirements were to create a TODO application with various functionalities, such as task description, start and end dates, status, and priority management.
-
-For more details on the initial project, visit: Course Project.
   
 For more details on the initial project, visit: [Course Project](https://matthieu495.gitlab.io/r4.a.10/section/tp4/).
 
@@ -71,6 +69,5 @@ npm run build
 - **Design:** Inspired by this [Figma design](https://www.figma.com/community/file/1336799126437101680) and [Google Keep](https://keep.google.com/u/0/#home).
 - **Illustrations:** Provided by [Storyset](https://storyset.com).
 
-BlueTask is a continuously evolving project, and I am open to feedback and suggestions.
-
+BlueTask is a continuously evolving project, and I am open to feedback and suggestions.  
 Thank you for exploring [BlueTask](bluetask.batledev.com). Happy tasking!
