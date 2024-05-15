@@ -2,7 +2,7 @@
   <v-container>
     <!-- Create task card-->
     <TaskCard
-      v-if="filterStatus === 'active' || filterLabel !== null"
+      v-if="(filterStatus === 'active' || filterLabel !== null) && user?.uid"
       create
       :label="filterLabel"
     />
@@ -22,11 +22,11 @@
     <!-- List of tasks -->
     <div class="items">
       <TaskCard
-        v-for="task in tasks"
+        v-for="taskId in tasksIds"
         class="item"
-        :key="task"
-        :taskId="task.id"
-        @click="selectedTask = task.id; showDialog = true"
+        :key="taskId"
+        :taskId="taskId"
+        @click="selectedTask = taskId; showDialog = true"
       />
     </div>
     <!-- Task dialog for editing -->
@@ -46,7 +46,7 @@
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { collection, query, where } from 'firebase/firestore'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
 
@@ -88,6 +88,7 @@ const filterLabel = computed(() => {
     ? router.currentRoute.value.hash.replace('#label/', '')
     : null
 })
+const tasksIds = ref([])
 
 // Fetch tasks based on the current user and filters
 const tasks = useCollection(() =>
@@ -100,6 +101,14 @@ const tasks = useCollection(() =>
     : null,
   { ssrKey: 'task' }
 )
+
+// Update tasksIds only of the tasks change
+watch(tasks, (newTasks) => {
+  const newTasksIds = newTasks.map((task) => task.id)
+  if (newTasksIds !== tasksIds.value) {
+    tasksIds.value = newTasksIds
+  }
+}, { deep: true });
 </script>
 
 <style scoped>

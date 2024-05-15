@@ -53,6 +53,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
+          :disabled="!newLabel.title"
           @click="addLabel"
         >
           Create

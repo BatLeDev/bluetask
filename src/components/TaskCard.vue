@@ -415,14 +415,14 @@ const props = defineProps({
   edit: {
     type: Boolean,
     default: false
-  },
-  taskId: {
-    type: String,
-    default: ''
   }, 
   label: {
     type: String,
     default: undefined
+  },
+  taskId: {
+    type: String,
+    default: ''
   }
 })
 
@@ -438,7 +438,6 @@ const swatches = [
   ['#99CCFF', '#FFCCFF'],
   ['#8FE96C', '#FFCCCC']
 ]
-
 const emptyTask = {
   title: '',
   description: '',
@@ -450,6 +449,7 @@ const emptyTask = {
   labels: [''],
   color: null
 }
+
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
@@ -473,7 +473,6 @@ onMounted(async () => {
  * Create the new task in the database and clear the form
  */
 const createTask = async () => {
-  if (!user) return
   if (
     task.value.title.trim() === '' &&
     task.value.description.trim() === '' &&
