@@ -12,25 +12,29 @@
     >
       <v-list-item
         prepend-icon="mdi-checkbox-marked-circle-outline"
+        :active="$route.hash === '#all'"
         title="Tasks"
         rounded="e-pill"
         @click="router.push('/dashboard/#all')"
       />
       <v-list-item
         prepend-icon="mdi-inbox-arrow-down-outline"
+        :active="$route.hash === '#archive'"
         title="Archive"
         rounded="e-pill"
         @click="router.push('/dashboard/#archive')"
       />
       <v-list-item
         prepend-icon="mdi-trash-can-outline"
+        :active="$route.hash === '#trash'"
         title="Trash"
         rounded="e-pill"
         @click="router.push('/dashboard/#trash')"
       />
-      <v-divider/>
+      <v-divider />
       <v-list-item
         v-for="label in labels"
+        :active="$route.hash === `#label/${label.title}`"
         :key="label.title"
         :prepend-icon="label.icon"
         :title="label.title"

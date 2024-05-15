@@ -26,18 +26,18 @@
         class="item"
         :key="task"
         :taskId="task.id"
-        @click="selectedTask = task.id"
+        @click="selectedTask = task.id; showDialog = true"
       />
     </div>
     <!-- Task dialog for editing -->
     <v-dialog
-      v-model="selectedTask"
+      v-model="showDialog"
       max-width="500px"
     >
       <TaskCard
         edit
         :taskId="selectedTask"
-        @close="selectedTask = null"
+        @close="selectedTask = null; showDialog = false"
       />
     </v-dialog>
   </v-container>
@@ -68,6 +68,7 @@ onBeforeUnmount(() => {
 
 // The id of the task that is currently selected for editing
 const selectedTask = ref(null)
+const showDialog = ref(false)
 
 // Filters tasks based on the current route
 const filterStatus = computed(() => {
@@ -97,7 +98,7 @@ const tasks = useCollection(() =>
       where('labels', 'array-contains', filterLabel.value || '')
     )
     : null,
-{ ssrKey: 'task' }
+  { ssrKey: 'task' }
 )
 </script>
 
