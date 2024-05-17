@@ -401,7 +401,7 @@
 
 <script setup>
 import { getAuth } from 'firebase/auth'
-import { addDoc, collection, deleteDoc, doc, updateDoc, onSnapshot } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, updateDoc, getDoc, onSnapshot } from 'firebase/firestore'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useFirestore } from 'vuefire'
 import { useDate } from 'vuetify'
@@ -462,14 +462,21 @@ const tasksCollection = collection(db, 'users', user.uid, 'tasks')
 onMounted(async () => {
   // Update in real time the task object if it's not in create mode
   if (!props.create) {
-    const taskRef = doc(tasksCollection, props.taskId)
-    onSnapshot(taskRef, (taskDocument) => {
-      if (taskDocument.exists()) {
-        task.value = taskDocument.data()
-        task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
-        task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
-      }
-    })
+    if (!props.dialog) {
+      const taskRef = doc(tasksCollection, props.taskId)
+      onSnapshot(taskRef, (taskDocument) => {
+        if (taskDocument.exists()) {
+          task.value = taskDocument.data()
+          task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
+          task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
+        }
+      })
+    } else {
+      const taskDocument = await getDoc(doc(tasksCollection, props.taskId))
+      task.value = taskDocument.data()
+      task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
+      task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
+    }
   }
 })
 
