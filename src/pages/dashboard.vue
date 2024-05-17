@@ -32,10 +32,10 @@
     <!-- Task dialog for editing -->
     <v-dialog
       v-model="showDialog"
-      max-width="500px"
+      max-width="800"
     >
       <TaskCard
-        edit
+        dialog
         :taskId="selectedTask"
         @close="selectedTask = null; showDialog = false"
       />
@@ -66,9 +66,9 @@ onBeforeUnmount(() => {
   authListener()
 })
 
-// The id of the task that is currently selected for editing
 const selectedTask = ref(null)
 const showDialog = ref(false)
+const tasksIds = ref([])
 
 // Filters tasks based on the current route
 const filterStatus = computed(() => {
@@ -88,7 +88,6 @@ const filterLabel = computed(() => {
     ? router.currentRoute.value.hash.replace('#label/', '')
     : null
 })
-const tasksIds = ref([])
 
 // Fetch tasks based on the current user and filters
 const tasks = useCollection(() =>
@@ -99,16 +98,14 @@ const tasks = useCollection(() =>
       where('labels', 'array-contains', filterLabel.value || '')
     )
     : null,
-  { ssrKey: 'task' }
+{ ssrKey: 'task' }
 )
 
 // Update tasksIds only of the tasks change
 watch(tasks, (newTasks) => {
   const newTasksIds = newTasks.map((task) => task.id)
-  if (newTasksIds !== tasksIds.value) {
-    tasksIds.value = newTasksIds
-  }
-}, { deep: true });
+  tasksIds.value = newTasksIds
+}, { deep: true })
 </script>
 
 <style scoped>

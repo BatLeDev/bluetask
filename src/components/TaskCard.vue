@@ -401,7 +401,7 @@
 
 <script setup>
 import { getAuth } from 'firebase/auth'
-import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, updateDoc, onSnapshot } from 'firebase/firestore'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useFirestore } from 'vuefire'
 import { useDate } from 'vuetify'
@@ -412,10 +412,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  edit: {
+  dialog: {
     type: Boolean,
     default: false
-  }, 
+  },
   label: {
     type: String,
     default: undefined
@@ -446,26 +446,30 @@ const emptyTask = {
   priority: -1,
   lines: [],
   linesChecked: [],
-  labels: [''],
-  color: null
+  labels: ['', props.label],
+  color: null,
+  status: 'active'
 }
 
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
-const showFullCard = computed(() => props.create || props.edit)
+const showFullCard = computed(() => props.create || props.dialog)
 
 const user = getAuth().currentUser
 const tasksCollection = collection(db, 'users', user.uid, 'tasks')
 
 onMounted(async () => {
+  // Update in real time the task object if it's not in create mode
   if (!props.create) {
-    const taskDocument = await getDoc(doc(tasksCollection, props.taskId))
-    task.value = taskDocument.data()
-    task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
-    task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
-  } else {
-    task.value.labels = ['', props.label]
+    const taskRef = doc(tasksCollection, props.taskId)
+    onSnapshot(taskRef, (taskDocument) => {
+      if (taskDocument.exists()) {
+        task.value = taskDocument.data()
+        task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
+        task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
+      }
+    })
   }
 })
 
@@ -473,6 +477,7 @@ onMounted(async () => {
  * Create the new task in the database and clear the form
  */
 const createTask = async () => {
+  // Check if it's an empty task
   if (
     task.value.title.trim() === '' &&
     task.value.description.trim() === '' &&
@@ -485,7 +490,7 @@ const createTask = async () => {
   )
   await addDoc(tasksCollection, {
     ...cleanTask,
-    status: 'active'
+    createAt: new Date()
   })
   task.value = JSON.parse(JSON.stringify(emptyTask)) // Clear the form
 }
@@ -520,7 +525,7 @@ const deleteTask = async () => {
   if (task.value.status === 'deleted') {
     await deleteDoc(doc(tasksCollection, props.taskId))
   } else {
-    await updateDoc(doc(tasksCollection, props.taskId), { status: 'deleted' })
+    task.value.status = 'deleted'
   }
   emit('close')
 }

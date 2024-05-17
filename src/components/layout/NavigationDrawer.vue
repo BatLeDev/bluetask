@@ -45,7 +45,7 @@
         prepend-icon="mdi-tag-edit-outline"
         title="Edit labels"
         rounded="e-pill"
-        @click=""
+        @click="null"
       >
         <LabelsSettings :userId="userId" />
       </v-list-item>
