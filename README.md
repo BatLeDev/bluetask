@@ -2,7 +2,7 @@
 
 # BlueTask - A TODO list app
 
-[![Logo](https://github.com/BatLeDev/bluetask-webapp/blob/master/src/assets/logo.png)](http://bluetask.batledev.com)
+[![Logo](https://github.com/BatLeDev/bluetask/blob/master/src/assets/logo.png)](http://bluetask.batledev.com)
 
 </div>
 

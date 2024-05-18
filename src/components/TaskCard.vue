@@ -352,7 +352,7 @@
             density="comfortable"
             icon
             variant="text"
-            @click="task.status = task.status !== 'archived' ? 'archived' : 'active'"
+            @click="archiveTask"
           >
             <v-icon v-if="task.status === 'active'">mdi-inbox-arrow-down-outline</v-icon>
             <v-icon v-else>mdi-inbox-arrow-up-outline</v-icon>
@@ -412,14 +412,17 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  // If true, the card will be in dialog mode
   dialog: {
     type: Boolean,
     default: false
   },
+  // The label to filter the tasks
   label: {
     type: String,
     default: undefined
   },
+  // The task id
   taskId: {
     type: String,
     default: ''
@@ -462,7 +465,12 @@ const tasksCollection = collection(db, 'users', user.uid, 'tasks')
 onMounted(async () => {
   // Update in real time the task object if it's not in create mode
   if (!props.create) {
-    if (!props.dialog) {
+    if (props.dialog) {
+      const taskDocument = await getDoc(doc(tasksCollection, props.taskId))
+      task.value = taskDocument.data()
+      task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
+      task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
+    } else {
       const taskRef = doc(tasksCollection, props.taskId)
       onSnapshot(taskRef, (taskDocument) => {
         if (taskDocument.exists()) {
@@ -471,11 +479,6 @@ onMounted(async () => {
           task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
         }
       })
-    } else {
-      const taskDocument = await getDoc(doc(tasksCollection, props.taskId))
-      task.value = taskDocument.data()
-      task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
-      task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
     }
   }
 })
@@ -526,19 +529,29 @@ const check = (line, checked) => {
 }
 
 /**
- * Delete the task from the database by its ID
+ * Delete the task
+ * - Move the task to the trash if it's not already there
+ * - Delete the task permanently if it's in the trash
  */
 const deleteTask = async () => {
   if (task.value.status === 'deleted') {
     await deleteDoc(doc(tasksCollection, props.taskId))
   } else {
-    task.value.status = 'deleted'
+    await updateDoc(doc(tasksCollection, props.taskId), { status: 'deleted' })
   }
   emit('close')
 }
 
 /**
- * Update the task in the database when the task object changes (only if not in create model)
+ * Archive or unarchive the task
+ */
+const archiveTask = async () => {
+  await updateDoc(doc(tasksCollection, props.taskId), { status: task.value.status === 'archived' ? 'active' : 'archived' })
+  emit('close')
+}
+
+/**
+ * Update the task in the database when the task object changes (only if not in create mode)
  */
 watch(
   task,
@@ -551,6 +564,13 @@ watch(
     }
   },
   { deep: true }
+)
+
+watch(
+  props,
+  async () => {
+    task.value.labels = ['', props.label]
+  }
 )
 </script>
 

@@ -14,8 +14,34 @@
           :prepend-icon="label.icon"
           class="ma-1"
           closable
-          @click:close="removeLabel(label)"
-        />
+        >
+          <template #close>
+            <v-icon
+              icon="mdi-close-circle"
+              @click.stop="confirmRemove = true; labelToRemove = label"
+            />
+            <v-dialog
+              v-model="confirmRemove"
+              max-width="500"
+            >
+              <v-card>
+                <v-card-title>Remove label</v-card-title>
+                <v-card-text>
+                  Are you sure you want to remove this label?
+                  All tasks with this label will be updated.
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn @click="removeLabel(labelToRemove); confirmRemove = false">
+                    Yes
+                  </v-btn>
+                  <v-btn @click="confirmRemove = false">
+                    No
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </template>
+        </v-chip>
 
         <v-divider class="my-4" />
 
@@ -59,9 +85,7 @@
           Create
         </v-btn>
 
-        <v-btn
-          @click="dialog = false"
-        >
+        <v-btn @click="dialog = false">
           Close
         </v-btn>
       </v-card-actions>
@@ -70,7 +94,7 @@
 </template>
 
 <script setup>
-import { collection, doc, updateDoc } from 'firebase/firestore'
+import { collection, doc, updateDoc, getDocs, query, where } from 'firebase/firestore'
 import { ref } from 'vue'
 import { useDocument, useFirestore } from 'vuefire'
 
@@ -82,6 +106,8 @@ const db = useFirestore()
 const userDoc = useDocument(doc(collection(db, 'users'), props.userId))
 
 const dialog = ref(false)
+const confirmRemove = ref(false)
+const labelToRemove = ref(null)
 const newLabel = ref({
   title: '',
   icon: 'tag-outline'
@@ -104,15 +130,28 @@ const addLabel = async () => {
   }
 }
 
-// TODO remove labels in all tasks
+/**
+ * Remove label from user document and update all tasks with this label.
+ * @param {Object} label - Label object to remove.
+ */
 const removeLabel = async (label) => {
   await updateDoc(doc(collection(db, 'users'), props.userId), {
     labels: userDoc.value.labels.filter((l) => l.title !== label.title)
   })
+  const tasksToUpdate = await getDocs(query(
+    collection(db, 'users', props.userId, 'tasks'),
+    where('labels', 'array-contains', label.title)
+  ))
+
+  tasksToUpdate.forEach(async (task) => {
+    await updateDoc(doc(collection(db, 'users', props.userId, 'tasks'), task.id), {
+      labels: task.data().labels.filter((l) => l !== label.title)
+    })
+  })
 }
 
 const openIconReference = () => {
-  window.open('https://materialdesignicons.com/', '_blank');
+  window.open('https://materialdesignicons.com/', '_blank')
 }
 </script>
 
