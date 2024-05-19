@@ -225,7 +225,8 @@
           :key="label"
           :text="label"
           class="ml-3"
-          closable
+          :closable="props.label !== label"
+          density="compact"
           @click:close="task.labels.splice(index, 1)"
         />
       </div>
@@ -316,6 +317,30 @@
             </v-menu>
           </v-btn>
 
+          <!-- Label menu -->
+          <v-btn
+            density="comfortable"
+            icon
+            variant="text"
+          >
+            <v-icon>mdi-tag-outline</v-icon>
+            <v-tooltip
+              activator="parent"
+              location="bottom"
+              text="Labels"
+            />
+            <v-menu
+              activator="parent"
+              :close-on-content-click="false"
+            >
+              <LabelSelector
+                :labels-of-the-task="task.labels"
+                :user-id="user.uid"
+                @add-label="label => task.labels.push(label.title)"
+              />
+            </v-menu>
+          </v-btn>
+
           <!-- Color -->
           <v-btn
             density="comfortable"
@@ -352,7 +377,6 @@
             </v-menu>
           </v-btn>
 
-          <!-- Label menu -->
           <!-- Archive btn-->
           <v-btn
             v-if="!create"
@@ -375,7 +399,7 @@
             density="comfortable"
             icon
             variant="text"
-            @click="create ? task = JSON.parse(JSON.stringify(emptyTask)) : deleteTask()"
+            @click="create ? clearTask() : deleteTask()"
           >
             <v-icon>mdi-delete-outline</v-icon>
             <v-tooltip
@@ -510,7 +534,15 @@ const createTask = async () => {
     ...cleanTask,
     createAt: new Date()
   })
-  task.value = JSON.parse(JSON.stringify(emptyTask)) // Clear the form
+  clearTask()
+}
+
+/**
+ * Clear the task form
+ */
+const clearTask = () => {
+  task.value = JSON.parse(JSON.stringify(emptyTask))
+  task.value.labels = [props.label] // Add the label to the task (from the route)
 }
 
 /**

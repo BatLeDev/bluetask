@@ -14,6 +14,7 @@
           :prepend-icon="label.icon"
           class="ma-1"
           closable
+          density="compact"
         >
           <template #close>
             <v-icon
@@ -79,7 +80,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn
-          :disabled="!newLabel.title"
+          :disabled="!newLabel.title || userDoc.labels.some((l) => l.title === newLabel.title)"
           @click="addLabel"
         >
           Create
@@ -114,7 +115,7 @@ const newLabel = ref({
 })
 
 const addLabel = async () => {
-  if (newLabel.value.title) {
+  if (newLabel.value.title && userDoc.value.labels.every((l) => l.title !== newLabel.value.title)) {
     if (!newLabel.value.icon) {
       newLabel.value.icon = 'mdi-tag-outline'
     } else if (!newLabel.value.icon.startsWith('mdi-')) {
