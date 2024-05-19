@@ -160,16 +160,7 @@
           />
         </v-col>
         <v-col cols="auto">
-          {{
-          Math.round(task.linesChecked.length
-          /
-          (task.lines.length
-          +
-          task.linesChecked.length)
-          *
-          100)
-          }}
-          %
+          {{ Math.round(task.linesChecked.length / (task.lines.length + task.linesChecked.length) * 100) }}%
         </v-col>
       </v-row>
 
@@ -221,6 +212,22 @@
         >
           {{ ['Low', 'Medium', 'High'][task.priority] }}
         </v-chip>
+      </div>
+
+      <!-- Labels -->
+      <div
+        v-if="task.labels.filter(label => label !== '').length > 0"
+        class="mt-2"
+      >
+        <v-icon>mdi-tag-outline</v-icon>
+        <v-chip
+          v-for="(label, index) in task.labels.filter(label => label !== '')"
+          :key="label"
+          :text="label"
+          class="ml-3"
+          closable
+          @click:close="task.labels.splice(index, 1)"
+        />
       </div>
 
       <!-- Actions (set data)-->
@@ -449,7 +456,7 @@ const emptyTask = {
   priority: -1,
   lines: [],
   linesChecked: [],
-  labels: ['', props.label],
+  labels: [props.label],
   color: null,
   status: 'active'
 }
@@ -498,6 +505,7 @@ const createTask = async () => {
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
   )
+  cleanTask.labels.push('')
   await addDoc(tasksCollection, {
     ...cleanTask,
     createAt: new Date()
@@ -569,12 +577,12 @@ watch(
 watch(
   props,
   async () => {
-    task.value.labels = ['', props.label]
+    task.value.labels = [props.label]
   }
 )
 </script>
 
-<style>
+<style scoped>
 .line-through .v-input__control {
   text-decoration: line-through;
 }

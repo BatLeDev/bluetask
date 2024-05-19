@@ -32,7 +32,7 @@
     <!-- Task dialog for editing -->
     <v-dialog
       v-model="showDialog"
-      max-width="800"
+      width="auto"
     >
       <TaskCard
         dialog
@@ -86,7 +86,7 @@ const filterStatus = computed(() => {
 const filterLabel = computed(() => {
   return router.currentRoute.value.hash.startsWith('#label/')
     ? router.currentRoute.value.hash.replace('#label/', '')
-    : null
+    : ''
 })
 
 // Fetch tasks based on the current user and filters

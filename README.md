@@ -29,6 +29,12 @@ Choosing **Vuetify** for the CSS framework was a strategic decision because:
 - I had prior experience with Vuetify at [Koumoul](http://https://koumoul.com/), where I used it extensively.
 - It supported my future career plans, as I aimed to secure a work-study program at the same company, necessitating proficiency in Vuetify.
 
+## TODO
+- [ ] **Task Sorting:** Sort tasks by date, priority, or status.
+- [ ] **Long Tasks:** Support tasks with a lot of lines.
+- [ ] **Task Search:** Search tasks by name or label.
+- [ ] **Task Sharing:** Share tasks with other users.
+
 ## Technologies Used
 - **Firebase Firestore:** For database management
 - **Vue.js:** The main framework.
