@@ -6,6 +6,7 @@
   >
     <v-app-bar-nav-icon
       v-if="isLogged"
+      class="d-none d-lg-block"
       @click.stop="rail = !rail"
     />
     <v-img

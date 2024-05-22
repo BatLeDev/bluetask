@@ -386,7 +386,7 @@
             variant="text"
             @click="archiveTask"
           >
-            <v-icon v-if="task.status === 'active'">mdi-inbox-arrow-down-outline</v-icon>
+            <v-icon v-if="task.status !== 'archived'">mdi-inbox-arrow-down-outline</v-icon>
             <v-icon v-else>mdi-inbox-arrow-up-outline</v-icon>
             <v-tooltip
               activator="parent"
@@ -415,14 +415,12 @@
         <v-col class="d-flex align-center justify-end">
           <v-btn
             v-if="create"
-            color="primary"
             text="Create task"
             variant="tonal"
             @click="createTask"
           />
           <v-btn
             v-else
-            color="primary"
             text="Close"
             variant="tonal"
             @click="$emit('close')"
