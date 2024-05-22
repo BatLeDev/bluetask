@@ -216,12 +216,12 @@
 
       <!-- Labels -->
       <div
-        v-if="task.labels.filter(label => label !== '').length > 0"
+        v-if="task.labels.length > 0"
         class="mt-2"
       >
         <v-icon>mdi-tag-outline</v-icon>
         <v-chip
-          v-for="label in task.labels.filter(label => label !== '')"
+          v-for="label in task.labels"
           :key="label"
           :text="label"
           class="ml-3"
@@ -481,7 +481,7 @@ const emptyTask = {
   priority: -1,
   lines: [],
   linesChecked: [],
-  labels: [props.label],
+  labels: props.label ? [props.label] : [],
   color: null,
   status: 'active'
 }
@@ -530,7 +530,6 @@ const createTask = async () => {
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
   )
-  cleanTask.labels.push('')
   await addDoc(tasksCollection, {
     ...cleanTask,
     createAt: new Date()
@@ -610,7 +609,7 @@ watch(
 watch(
   props,
   async () => {
-    if (props.create) {
+    if (props.create && props.label) {
       task.value.labels = [props.label]
     }
   }

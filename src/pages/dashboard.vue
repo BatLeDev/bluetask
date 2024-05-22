@@ -46,7 +46,7 @@
 
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { collection, orderBy, query, where } from 'firebase/firestore'
+import { collection, orderBy, query, where, limit } from 'firebase/firestore'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
@@ -87,7 +87,7 @@ const filterStatus = computed(() => {
 const filterLabel = computed(() => {
   return router.currentRoute.value.hash.startsWith('#label/')
     ? router.currentRoute.value.hash.replace('#label/', '')
-    : ''
+    : null
 })
 
 // Fetch tasks based on the current user and filters
@@ -96,10 +96,12 @@ const tasks = useCollection(() =>
     ? query(
       collection(db, 'users', user.value.uid, 'tasks'),
       where('status', '==', filterStatus.value),
-      where('labels', 'array-contains', filterLabel.value || ''), // Filter tasks by label, all tasks have the label ''
+      filterLabel.value
+        ? where('labels', 'array-contains', filterLabel.value) // Filter tasks by label
+        : limit(100), // Useless limit, so null isnt allowed
       router.currentRoute.value.query.priority !== undefined
         ? where('priority', '==', parseInt(router.currentRoute.value.query.priority)) // Filter tasks by priority
-        : where('priority', '<', 4), // Show all tasks if no priority filter is applied
+        : limit(100), // Useless limit, so null isnt allowed
       orderBy('createAt', 'desc')
     )
     : null,
