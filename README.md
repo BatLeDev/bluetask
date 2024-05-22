@@ -32,7 +32,7 @@ Choosing **Vuetify** for the CSS framework was a strategic decision because:
 ## TODO
 - [ ] **Task Sorting:** Sort tasks by date, priority, or status.
 - [ ] **Long Tasks:** Support tasks with a lot of lines.
-- [ ] **Task Search:** Search tasks by name or label.
+- [ ] **Task Search:** Search tasks by name.
 - [ ] **Task Sharing:** Share tasks with other users.
 
 ## Technologies Used

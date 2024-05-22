@@ -164,7 +164,7 @@
         </v-col>
       </v-row>
 
-      <!------ Data ------>
+      <!------------------ Data ------------------>
       <!-- StartDate -->
       <div
         v-if="task.startDate"
@@ -221,19 +221,20 @@
       >
         <v-icon>mdi-tag-outline</v-icon>
         <v-chip
-          v-for="(label, index) in task.labels.filter(label => label !== '')"
+          v-for="label in task.labels.filter(label => label !== '')"
           :key="label"
           :text="label"
           class="ml-3"
-          :closable="props.label !== label"
+          :closable="label !== props.label"
           density="compact"
-          @click:close="task.labels.splice(index, 1)"
+          @click:close="task.labels = task.labels.filter((l) => l !== label)"
         />
       </div>
 
       <!-- Actions (set data)-->
       <v-row
-        v-if="showFullCard"
+        v-if="
+              showFullCard"
         class="mt-1"
       >
         <!-- Groupe d'action de gauche -->
@@ -609,7 +610,9 @@ watch(
 watch(
   props,
   async () => {
-    task.value.labels = [props.label]
+    if (props.create) {
+      task.value.labels = [props.label]
+    }
   }
 )
 </script>

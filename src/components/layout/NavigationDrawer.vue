@@ -2,6 +2,7 @@
   <v-navigation-drawer
     v-model="drawer"
     :rail="props.rail"
+    color="secondary"
     expand-on-hover
     permanent
     touchless

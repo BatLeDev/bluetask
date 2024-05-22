@@ -25,6 +25,7 @@
         v-for="taskId in tasksIds"
         class="item"
         :key="taskId"
+        :label="filterLabel"
         :taskId="taskId"
         @click="selectedTask = taskId; showDialog = true"
       />
@@ -45,7 +46,7 @@
 
 <script setup>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { collection, query, where } from 'firebase/firestore'
+import { collection, orderBy, query, where } from 'firebase/firestore'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useFirestore, useCollection, useCurrentUser } from 'vuefire'
 import { useRouter } from 'vue-router'
@@ -95,7 +96,8 @@ const tasks = useCollection(() =>
     ? query(
       collection(db, 'users', user.value.uid, 'tasks'),
       where('status', '==', filterStatus.value),
-      where('labels', 'array-contains', filterLabel.value || '')
+      where('labels', 'array-contains', filterLabel.value || ''),
+      orderBy('createAt', 'desc')
     )
     : null,
 { ssrKey: 'task' }

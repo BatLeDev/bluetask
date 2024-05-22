@@ -1,5 +1,9 @@
 <template>
-  <v-app-bar color="primary" elevation="1">
+  <v-app-bar
+    color="secondary"
+    elevation="1"
+    class="pr-4"
+  >
     <v-app-bar-nav-icon
       v-if="isLogged"
       @click.stop="rail = !rail"

@@ -6,9 +6,9 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 
 const baseColors = {
-  primary: '#1E88E5',
-  secondary: '#42A5F5',
-  accent: '#BA68C8',
+  primary: '#7dc3c0',
+  secondary: '#143d59',
+  accent: '#7dc3c0',
   error: '#FF5252',
   info: '#1E88E5',
   success: '#4CAF50',
@@ -16,12 +16,8 @@ const baseColors = {
   admin: '#E53935'
 }
 
-const darkBaseColors = {
-  accent: '#BA68C8'
-}
-
 const lightColors = { ...baseColors }
-const darkColors = { ...baseColors, ...darkBaseColors }
+const darkColors = { ...baseColors }
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
