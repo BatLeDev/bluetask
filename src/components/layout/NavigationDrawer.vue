@@ -57,16 +57,16 @@
           <v-list-item
             v-bind="props"
             prepend-icon="mdi-flag-outline"
-            :title="priorityData.find(p => p.value === $route.query.priority).title"
+            :title="priorityData[$route.query.priority]?.title || 'Priority'"
             rounded="e-pill"
-            :color="priorityData.find(p => p.value === $route.query.priority).color"
-            :base-color="priorityData.find(p => p.value === $route.query.priority).color"
+            :color="priorityData[$route.query.priority]?.color || ''"
+            :base-color="priorityData[$route.query.priority]?.color || ''"
           />
         </template>
         <v-list-item
-          v-for="priority in priorityData.filter(p => p.value !== $route.query.priority)"
+          v-for="priority in priorityData.filter(p => p.value != $route.query.priority)"
           :key="priority"
-          :title="priority.title === 'Priority' ? 'Clear' : priority.title"
+          :title="priority.title"
           rounded="e-pill"
           @click="router.push({ hash: $route.hash, query: { priority: priority.value } })"
         />
@@ -99,10 +99,10 @@ const labels = computed(() => userDoc.value?.labels || [])
 const drawer = ref(true)
 
 const priorityData = [
-  { color: 'success', title: 'Low', value: 'low' },
-  { color: 'warning', title: 'Medium', value: 'medium' },
-  { color: 'error', title: 'High', value: 'high' },
-  { color: ' ', title: 'Priority', value: undefined }
+  { color: 'success', title: 'Low', value: 0 },
+  { color: 'warning', title: 'Medium', value: 1 },
+  { color: 'error', title: 'High', value: 2 },
+  { color: '', title: 'Clear', value: undefined }
 ]
 </script>
 

@@ -96,7 +96,10 @@ const tasks = useCollection(() =>
     ? query(
       collection(db, 'users', user.value.uid, 'tasks'),
       where('status', '==', filterStatus.value),
-      where('labels', 'array-contains', filterLabel.value || ''),
+      where('labels', 'array-contains', filterLabel.value || ''), // Filter tasks by label, all tasks have the label ''
+      router.currentRoute.value.query.priority !== undefined
+        ? where('priority', '==', parseInt(router.currentRoute.value.query.priority)) // Filter tasks by priority
+        : where('priority', '<', 4), // Show all tasks if no priority filter is applied
       orderBy('createAt', 'desc')
     )
     : null,
