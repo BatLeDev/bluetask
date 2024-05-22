@@ -411,18 +411,20 @@
           </v-btn>
         </v-col>
 
-        <!-- Close/Create btn -->
+        <!-- Create/Close btn -->
         <v-col class="d-flex align-center justify-end">
           <v-btn
             v-if="create"
             color="primary"
             text="Create task"
+            variant="tonal"
             @click="createTask"
           />
           <v-btn
             v-else
             color="primary"
             text="Close"
+            variant="tonal"
             @click="$emit('close')"
           />
         </v-col>
@@ -469,8 +471,8 @@ const db = useFirestore()
 const swatches = [
   ['#FFC164', '#E47676'],
   ['#FFFF99', '#7A73F0'],
-  ['#CCFFFF', '#CC99FF'],
-  ['#99CCFF', '#FFCCFF'],
+  ['#7dc3c0', '#143d59'],
+  ['#CC99FF', '#FFCCFF'],
   ['#8FE96C', '#FFCCCC']
 ]
 const emptyTask = {

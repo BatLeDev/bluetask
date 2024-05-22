@@ -81,6 +81,7 @@
       <v-card-actions>
         <v-btn
           :disabled="!newLabel.title || userDoc.labels.some((l) => l.title === newLabel.title)"
+          color="primary"
           @click="addLabel"
         >
           Create
