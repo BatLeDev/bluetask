@@ -6,12 +6,13 @@
   >
     <v-card>
       <v-card-title>Labels</v-card-title>
+      <!-- Labels chips (with confirm to remive a chip) -->
       <v-card-text class="py-0">
         <v-chip
           v-for="label in userDoc.labels"
           :key="label"
-          :text="label.title"
           :prepend-icon="label.icon"
+          :text="label.title"
           class="ma-1"
           closable
           density="compact"
@@ -32,12 +33,14 @@
                   All tasks with this label will be updated.
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn @click="removeLabel(labelToRemove); confirmRemove = false">
-                    Yes
-                  </v-btn>
-                  <v-btn @click="confirmRemove = false">
-                    No
-                  </v-btn>
+                  <v-btn
+                    text='Yes'
+                    @click="removeLabel(labelToRemove); confirmRemove = false"
+                  />
+                  <v-btn
+                    text='No'
+                    @click="confirmRemove = false"
+                  />
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -78,18 +81,18 @@
         </v-text-field>
 
       </v-card-text>
+      <!-- Actions to add a new label -->
       <v-card-actions>
         <v-btn
           :disabled="!newLabel.title || userDoc.labels.some((l) => l.title === newLabel.title)"
           color="primary"
+          text="Create"
           @click="addLabel"
-        >
-          Create
-        </v-btn>
-
-        <v-btn @click="dialog = false">
-          Close
-        </v-btn>
+        />
+        <v-btn
+          text="close"
+          @click="dialog = false"
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -101,7 +104,7 @@ import { ref } from 'vue'
 import { useDocument, useFirestore } from 'vuefire'
 
 const props = defineProps({
-  userId: String
+  userId: String // To get user document
 })
 
 const db = useFirestore()
@@ -115,17 +118,19 @@ const newLabel = ref({
   icon: 'tag-outline'
 })
 
+/**
+ * Add new label to user document.
+ */
 const addLabel = async () => {
+  // Check if label title is not empty and not already exists
   if (newLabel.value.title && userDoc.value.labels.every((l) => l.title !== newLabel.value.title)) {
-    if (!newLabel.value.icon) {
-      newLabel.value.icon = 'mdi-tag-outline'
-    } else if (!newLabel.value.icon.startsWith('mdi-')) {
-      newLabel.value.icon = `mdi-${newLabel.value.icon}`
-    }
+    const icon = newLabel.value.icon ? `mdi-${newLabel.value.icon}` : 'mdi-tag-outline'
+    const title = newLabel.value.title
+
     await updateDoc(doc(collection(db, 'users'), props.userId), {
-      labels: [...userDoc.value.labels, newLabel.value]
+      labels: [...userDoc.value.labels, { title, icon }] // Add new label to user document
     })
-    newLabel.value = {
+    newLabel.value = { // Reset new label fields
       title: '',
       icon: 'tag-outline'
     }
@@ -134,17 +139,19 @@ const addLabel = async () => {
 
 /**
  * Remove label from user document and update all tasks with this label.
- * @param {Object} label - Label object to remove.
+ * @param {object} label - Label object to remove.
  */
 const removeLabel = async (label) => {
+  // Update the user document
   await updateDoc(doc(collection(db, 'users'), props.userId), {
     labels: userDoc.value.labels.filter((l) => l.title !== label.title)
   })
+
+  // Update all tasks with this label
   const tasksToUpdate = await getDocs(query(
     collection(db, 'users', props.userId, 'tasks'),
     where('labels', 'array-contains', label.title)
   ))
-
   tasksToUpdate.forEach(async (task) => {
     await updateDoc(doc(collection(db, 'users', props.userId, 'tasks'), task.id), {
       labels: task.data().labels.filter((l) => l !== label.title)
@@ -152,9 +159,7 @@ const removeLabel = async (label) => {
   })
 }
 
-const openIconReference = () => {
-  window.open('https://materialdesignicons.com/', '_blank')
-}
+const openIconReference = () => window.open('https://materialdesignicons.com/', '_blank')
 </script>
 
 <style scoped></style>

@@ -486,7 +486,7 @@ const emptyTask = {
   state: -1,
   lines: [],
   linesChecked: [],
-  labels: props.label ? [props.label] : [],
+  labels: [],
   color: null,
   status: 'active'
 }
@@ -527,6 +527,8 @@ onMounted(async () => {
         if (taskDocument.exists()) setTaskToTaskDocument(taskDocument)
       })
     }
+  } else {
+    task.value.labels = props.label ? [props.label] : [] // Add the label from the route (or remove if undefined)
   }
 })
 
@@ -553,13 +555,14 @@ const createTask = async () => {
     task.value.linesChecked.length === 0
   ) return
 
+  task.value.state = state // Add the state (computed property)
+
   // Remove undefined values
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
   )
   await addDoc(tasksCollection, {
     ...cleanTask,
-    state, // Add the state (computed property)
     createAt: new Date()
   })
   clearTask()
@@ -572,7 +575,7 @@ const createTask = async () => {
  */
 const clearTask = () => {
   task.value = JSON.parse(JSON.stringify(emptyTask))
-  task.value.labels = [props.label]
+  if (props.label) task.value.labels = [props.label]
 }
 
 /**
@@ -643,8 +646,8 @@ watch(
 watch(
   props,
   async () => {
-    if (props.create && props.label) {
-      task.value.labels = [props.label]
+    if (props.create) {
+      task.value.labels = props.label ? [props.label] : [] // Add the label from the route (or remove if undefined)
     }
   }
 )

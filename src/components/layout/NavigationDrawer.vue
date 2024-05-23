@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer
-    v-model="drawer"
+    :v-model="true"
     :rail="props.rail"
     color="secondary"
     expand-on-hover
@@ -11,28 +11,19 @@
       color="primary"
       mandatory
     >
+      <!---- All/Archive/Trash---->
       <v-list-item
-        prepend-icon="mdi-checkbox-marked-circle-outline"
-        :active="$route.hash === '#all'"
-        title="Tasks"
+        v-for="location in locationData"
+        :active="$route.hash === location.hash"
+        :key="location.hash"
+        :prepend-icon="location.icon"
+        :title="location.title"
         rounded="e-pill"
-        @click="router.push({ hash: '#all', query: $route.query })"
-      />
-      <v-list-item
-        prepend-icon="mdi-inbox-arrow-down-outline"
-        :active="$route.hash === '#archive'"
-        title="Archive"
-        rounded="e-pill"
-        @click="router.push({ hash: '#archive', query: $route.query })"
-      />
-      <v-list-item
-        prepend-icon="mdi-trash-can-outline"
-        :active="$route.hash === '#trash'"
-        title="Trash"
-        rounded="e-pill"
-        @click="router.push({ hash: '#trash', query: $route.query })"
+        @click="router.push({ hash: location.hash, query: $route.query })"
       />
       <v-divider />
+
+      <!---- Labels ---->
       <v-list-item
         v-for="label in labels"
         :active="$route.hash === `#label/${label.title}`"
@@ -51,6 +42,8 @@
         <LabelsSettings :userId="userId" />
       </v-list-item>
       <v-divider />
+
+      <!---- Filters/Order ---->
       <!-- Priority filter -->
       <v-list-group>
         <template v-slot:activator="{ props}">
@@ -98,7 +91,7 @@
 <script setup>
 import { getAuth } from 'firebase/auth'
 import { collection, doc } from 'firebase/firestore'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useDocument, useFirestore } from 'vuefire'
 import { useRouter } from 'vue-router'
 
@@ -106,17 +99,19 @@ const router = useRouter()
 const db = useFirestore()
 
 const props = defineProps({
-  rail: {
-    type: Boolean,
-    default: true
-  }
+  rail: Boolean // Show expanded
 })
 
 const userId = getAuth().currentUser.uid
 const usersDocRef = computed(() => doc(collection(db, 'users'), userId))
 const userDoc = useDocument(usersDocRef)
 const labels = computed(() => userDoc.value?.labels || [])
-const drawer = ref(true)
+
+const locationData = [
+  { hash: '#all', title: 'Tasks', icon: 'mdi-checkbox-marked-circle-outline' },
+  { hash: '#archive', title: 'Archive', icon: 'mdi-inbox-arrow-down-outline' },
+  { hash: '#trash', title: 'Trash', icon: 'mdi-trash-can-outline' }
+]
 
 const priorityData = [
   { color: 'success', title: 'Low', value: 0 },
