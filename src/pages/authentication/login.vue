@@ -1,4 +1,5 @@
 <template>
+  <!-- container used to show card at the center -->
   <v-container
     class="d-flex align-center justify-center"
     style="height: 80%;"
@@ -9,67 +10,58 @@
       max-width="500"
       rounded="lg"
     >
-      <v-card-title class="text-lg-h4 font-weight-bold mb-4">Log in to <span
-          class="text-accent">BlueTask</span></v-card-title>
-
-      <v-alert
-        v-if="errMsg"
-        :text=errMsg
-        type="error"
-        variant="outlined"
-        density="compact"
-        class="mb-4"
-      />
+      <v-card-title class="text-lg-h4 font-weight-bold mb-4">
+        Log in to <span class="text-accent">BlueTask</span>
+      </v-card-title>
 
       <v-btn
+        class="mb-4"
         icon="mdi-google"
         variant="outlined"
-        class="mb-4"
         @click="signInWithGoogle"
       />
 
       <p class="font-italic text-h6 font-weight-light mb-4">Or</p>
 
+      <v-alert
+        v-if="errMsg"
+        :text=errMsg
+        class="mb-4"
+        density="compact"
+        type="error"
+        variant="outlined"
+      />
+
       <v-text-field
         v-model="email"
         :rules="[required]"
+        class="mb-4"
         density="compact"
         label="Email"
         placeholder="Email address"
         prepend-inner-icon="mdi-email-outline"
         variant="outlined"
-        class="mb-4"
       />
-
-      <!-- <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-        <a
-          class="text-caption text-decoration-none text-blue"
-          href="#"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Forgot login password?</a>
-      </div> -->
 
       <v-text-field
         v-model="password"
-        :rules="[required]"
         :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+        :rules="[required]"
         :type="visible ? 'text' : 'password'"
+        class="mb-4"
         density="compact"
         label="Password"
         placeholder="Enter your password"
         prepend-inner-icon="mdi-lock-outline"
         variant="outlined"
-        class="mb-4"
         @click:append-inner="visible = !visible"
       />
 
       <v-btn
         append-icon="mdi-login"
-        variant="elevated"
         color="accent"
         rounded="lg"
+        variant="elevated"
         @click="login"
       >
         Log In
@@ -77,8 +69,8 @@
 
       <v-card-text class="text-center">
         <a
-          href="/authentication/register"
           class="link"
+          href="/authentication/register"
         >
           You don't have an account ? Sign up now
         </a>
@@ -103,6 +95,10 @@ const password = ref('')
 const visible = ref(false)
 const required = (v) => !!v || 'This field is required'
 
+/**
+ * Log in user with email and password
+ * Start when user click on login button
+ */
 const login = () => {
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then(() => {
@@ -129,6 +125,9 @@ const login = () => {
     })
 }
 
+/**
+ * Log in user with Google
+ */
 const signInWithGoogle = async () => {
   signInWithPopup(getAuth(), new GoogleAuthProvider())
     .then(async () => {
@@ -150,16 +149,17 @@ const signInWithGoogle = async () => {
     })
 }
 
-// For user who are already logged in
+/**
+ * Redirect to dashboard if user is authenticated
+ */
 const authListener = onAuthStateChanged(getAuth(), (user) => {
-  if (user) {
-    router.push('/dashboard/#all')
-  }
+  if (user) router.push('/dashboard/#all')
 })
 
-onBeforeUnmount(() => {
-  authListener()
-})
+/**
+ * Remove auth listener when component is unmounted
+ */
+onBeforeUnmount(() => authListener())
 </script>
 
 <style scoped></style>

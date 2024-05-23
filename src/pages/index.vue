@@ -37,16 +37,17 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// For user who are already logged in
+/**
+ * Redirect to dashboard if user is authenticated
+ */
 const authListener = onAuthStateChanged(getAuth(), (user) => {
-  if (user) {
-    router.push('/dashboard/#all')
-  }
+  if (user) router.push('/dashboard/#all')
 })
 
-onBeforeUnmount(() => {
-  authListener()
-})
+/**
+ * Remove auth listener when component is unmounted
+ */
+onBeforeUnmount(() => authListener())
 </script>
 
 <style scoped></style>

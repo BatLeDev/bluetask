@@ -59,17 +59,13 @@ const db = useFirestore()
  * Redirect to login page if user is not authenticated
  */
 const authListener = onAuthStateChanged(getAuth(), (user) => {
-  if (!user) {
-    router.push('/authentication/login')
-  }
+  if (!user) router.push('/authentication/login')
 })
 
 /**
  * Remove auth listener when component is unmounted
  */
-onBeforeUnmount(() => {
-  authListener()
-})
+onBeforeUnmount(() => authListener())
 
 const selectedTask = ref(null)
 const showDialog = ref(false)

@@ -8,7 +8,7 @@
       class="pa-5 pt-3"
       :color="task.color || ''"
     >
-      <!-- Title -->
+      <!-------- Title -------->
       <v-textarea
         v-if="showFullCard || task.title.trim() !== ''"
         v-model="task.title"
@@ -22,7 +22,7 @@
         :readonly="!showFullCard"
       />
 
-      <!-- Description -->
+      <!-------- Description -------->
       <v-textarea
         v-if="showFullCard || task.description.trim() !== ''"
         v-model="task.description"
@@ -35,7 +35,7 @@
         :readonly="!showFullCard"
       />
 
-      <!-- Add new line -->
+      <!-------- Add new line -------->
       <v-textarea
         v-if="showFullCard"
         v-model="newLine"
@@ -70,7 +70,7 @@
         </template>
       </v-textarea>
 
-      <!-- Lines not checked -->
+      <!-------- Lines not checked -------->
       <v-textarea
         v-for="(line, index) in task.lines"
         v-model="task.lines[index]"
@@ -104,7 +104,7 @@
         </template>
       </v-textarea>
 
-      <!-- Lines checked -->
+      <!-------- Lines checked -------->
       <v-divider
         v-if="task.linesChecked.length > 0 && task.lines.length > 0"
         class="mt-2"
@@ -143,7 +143,7 @@
         </template>
       </v-textarea>
 
-      <!-- Progress bar -->
+      <!-------- Progress bar -------->
       <v-row
         v-if="task.lines.length > 0 || task.linesChecked.length > 0"
         class="mt-2 align-center"
@@ -164,8 +164,8 @@
         </v-col>
       </v-row>
 
-      <!------------------ Data ------------------>
-      <!-- StartDate -->
+      <!------------------ Show Data ------------------>
+      <!-------- StartDate -------->
       <div
         v-if="task.startDate"
         class="mt-2"
@@ -181,7 +181,7 @@
         </v-chip>
       </div>
 
-      <!-- EndDate -->
+      <!-------- EndDate -------->
       <div
         v-if="task.endDate"
         class="mt-2"
@@ -197,7 +197,7 @@
         </v-chip>
       </div>
 
-      <!-- Priority -->
+      <!-------- Priority -------->
       <div
         v-if="task.priority > -1"
         class="mt-2"
@@ -214,7 +214,7 @@
         </v-chip>
       </div>
 
-      <!-- Labels -->
+      <!-------- Labels -------->
       <div
         v-if="task.labels.length > 0"
         class="mt-2"
@@ -231,18 +231,18 @@
         />
       </div>
 
-      <!-- Actions (set data)-->
+      <!------------------ Actions (set data) ------------------>
       <v-row
         v-if="
               showFullCard"
         class="mt-1"
       >
-        <!-- Groupe d'action de gauche -->
+        <!-------- Left actions -------->
         <v-col
           class="pl-1"
           cols="auto"
         >
-          <!-- StartDate -->
+          <!------ StartDate ------>
           <v-btn
             density="comfortable"
             icon
@@ -265,7 +265,7 @@
             </v-menu>
           </v-btn>
 
-          <!-- EndDate -->
+          <!------ EndDate ------>
           <v-btn
             density="comfortable"
             icon
@@ -289,7 +289,7 @@
             </v-menu>
           </v-btn>
 
-          <!-- Priority -->
+          <!------ Priority ------>
           <v-btn
             density="comfortable"
             icon
@@ -318,7 +318,7 @@
             </v-menu>
           </v-btn>
 
-          <!-- Label menu -->
+          <!------ Label menu ------>
           <v-btn
             density="comfortable"
             icon
@@ -342,7 +342,7 @@
             </v-menu>
           </v-btn>
 
-          <!-- Color -->
+          <!------ Color ------>
           <v-btn
             density="comfortable"
             icon
@@ -378,7 +378,7 @@
             </v-menu>
           </v-btn>
 
-          <!-- Archive btn-->
+          <!------ Archive ------>
           <v-btn
             v-if="!create"
             density="comfortable"
@@ -395,7 +395,7 @@
             />
           </v-btn>
 
-          <!-- Delete -->
+          <!------ Clear/Delete ------>
           <v-btn
             density="comfortable"
             icon
@@ -411,7 +411,8 @@
           </v-btn>
         </v-col>
 
-        <!-- Create/Close btn -->
+        <!-------- Right actions -------->
+        <!------ Create/Close btn ------>
         <v-col class="d-flex align-center justify-end">
           <v-btn
             v-if="create"
@@ -444,12 +445,12 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  // If true, the card will be in dialog mode
+  // If true, the card will be in editing (dialog) mode
   dialog: {
     type: Boolean,
     default: false
   },
-  // The label to filter the tasks
+  // The label defined in the route
   label: {
     type: String,
     default: undefined
@@ -463,9 +464,11 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-const date = useDate()
-const db = useFirestore()
+const date = useDate() // To format the dates
+const db = useFirestore() // Firestore instance
 
+// ------------------ Constants ------------------
+// Swatches for the color picker
 const swatches = [
   ['#FFC164', '#E47676'],
   ['#FFFF99', '#7A73F0'],
@@ -473,6 +476,7 @@ const swatches = [
   ['#CC99FF', '#FFCCFF'],
   ['#8FE96C', '#FFCCCC']
 ]
+// Empty task object
 const emptyTask = {
   title: '',
   description: '',
@@ -487,11 +491,15 @@ const emptyTask = {
   status: 'active'
 }
 
+// ------------------ Variables ------------------
 const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
-const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
-const showFullCard = computed(() => props.create || props.dialog)
+const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Init with a deep copy of the empty task object
 
+// ------------------ Computed ------------------
+// To show actions and empty fields
+const showFullCard = computed(() => props.create || props.dialog)
+// State of the task (0: active, 1: completed, 2: cleared, -1: no lines)
 const state = computed(() => {
   const lines = task.value.lines.length
   const linesChecked = task.value.linesChecked.length
@@ -502,29 +510,36 @@ const state = computed(() => {
   else return -1
 })
 
+// ------------ Get tasks collection ------------
 const user = getAuth().currentUser
 const tasksCollection = collection(db, 'users', user.uid, 'tasks')
 
+/**
+ * Fetch the task from the database when the component is mounted
+ */
 onMounted(async () => {
-  // Update in real time the task object if it's not in create mode
-  if (!props.create) {
+  if (!props.create) { // Don't fetch the task in create mode
     if (props.dialog) {
-      const taskDocument = await getDoc(doc(tasksCollection, props.taskId))
-      task.value = taskDocument.data()
-      task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
-      task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
+      setTaskToTaskDocument(await getDoc(doc(tasksCollection, props.taskId)))
     } else {
       const taskRef = doc(tasksCollection, props.taskId)
-      onSnapshot(taskRef, (taskDocument) => {
-        if (taskDocument.exists()) {
-          task.value = taskDocument.data()
-          task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
-          task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
-        }
+      onSnapshot(taskRef, (taskDocument) => { // Update the task when it changes in the database
+        if (taskDocument.exists()) setTaskToTaskDocument(taskDocument)
       })
     }
   }
 })
+
+// ------------------ Functions ------------------
+/**
+ * Set the task object to the task document
+ * @param taskDocument - The task document
+ */
+const setTaskToTaskDocument = (taskDocument) => {
+  task.value = taskDocument.data()
+  task.value.startDate = taskDocument.data().startDate ? taskDocument.data().startDate.toDate() : undefined
+  task.value.endDate = taskDocument.data().endDate ? taskDocument.data().endDate.toDate() : undefined
+}
 
 /**
  * Create the new task in the database and clear the form
@@ -538,12 +553,13 @@ const createTask = async () => {
     task.value.linesChecked.length === 0
   ) return
 
-  task.value.state = state
+  // Remove undefined values
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
   )
   await addDoc(tasksCollection, {
     ...cleanTask,
+    state, // Add the state (computed property)
     createAt: new Date()
   })
   clearTask()
@@ -551,14 +567,18 @@ const createTask = async () => {
 
 /**
  * Clear the task form
+ * - Clear the task object
+ * - Add the label to the task (from the route)
  */
 const clearTask = () => {
   task.value = JSON.parse(JSON.stringify(emptyTask))
-  task.value.labels = [props.label] // Add the label to the task (from the route)
+  task.value.labels = [props.label]
 }
 
 /**
  * Add a new line to the task
+ * - Clear the new line field
+ * - Focus the new line field
  */
 const addTaskLine = () => {
   if (newLine.value) {
@@ -586,11 +606,8 @@ const check = (line, checked) => {
  * - Delete the task permanently if it's in the trash
  */
 const deleteTask = async () => {
-  if (task.value.status === 'deleted') {
-    await deleteDoc(doc(tasksCollection, props.taskId))
-  } else {
-    await updateDoc(doc(tasksCollection, props.taskId), { status: 'deleted' })
-  }
+  if (task.value.status === 'deleted') await deleteDoc(doc(tasksCollection, props.taskId))
+  else await updateDoc(doc(tasksCollection, props.taskId), { status: 'deleted' })
   emit('close')
 }
 
@@ -602,6 +619,7 @@ const archiveTask = async () => {
   emit('close')
 }
 
+// ------------------ Watchers ------------------
 /**
  * Update the task in the database when the task object changes (only if not in create mode)
  */
@@ -633,6 +651,7 @@ watch(
 </script>
 
 <style scoped>
+/* Line-through the checked task */
 .line-through .v-input__control {
   text-decoration: line-through;
 }
