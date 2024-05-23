@@ -479,6 +479,7 @@ const emptyTask = {
   startDate: null,
   endDate: null,
   priority: -1,
+  state: -1,
   lines: [],
   linesChecked: [],
   labels: props.label ? [props.label] : [],
@@ -490,6 +491,16 @@ const newLine = ref('') // Ref to the new line text
 const newLineRef = ref() // Ref to the new line text field
 const task = ref(JSON.parse(JSON.stringify(emptyTask))) // Deep copy
 const showFullCard = computed(() => props.create || props.dialog)
+
+const state = computed(() => {
+  const lines = task.value.lines.length
+  const linesChecked = task.value.linesChecked.length
+
+  if (lines > 0 && linesChecked === 0) return 0
+  else if (lines > 0 && linesChecked > 0) return 1
+  else if (lines === 0 && linesChecked > 0) return 2
+  else return -1
+})
 
 const user = getAuth().currentUser
 const tasksCollection = collection(db, 'users', user.uid, 'tasks')
@@ -527,6 +538,7 @@ const createTask = async () => {
     task.value.linesChecked.length === 0
   ) return
 
+  task.value.state = state
   const cleanTask = Object.fromEntries(
     Object.entries(task.value).filter(([, value]) => value !== undefined)
   )
@@ -597,6 +609,7 @@ watch(
   task,
   async () => {
     if (!props.create) {
+      task.value.state = state // Update the state
       const cleanTask = Object.fromEntries(
         Object.entries(task.value).filter(([, value]) => value !== undefined)
       )
@@ -606,6 +619,9 @@ watch(
   { deep: true }
 )
 
+/**
+ * Update the labels of the task when route changes if in create mode
+ */
 watch(
   props,
   async () => {

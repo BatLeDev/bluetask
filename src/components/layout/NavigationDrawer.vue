@@ -68,7 +68,27 @@
           :key="priority"
           :title="priority.title"
           rounded="e-pill"
-          @click="router.push({ hash: $route.hash, query: { priority: priority.value } })"
+          @click="router.push({ hash: $route.hash, query: { ...$route.query, priority: priority.value } })"
+        />
+      </v-list-group>
+      <!-- State filter -->
+      <v-list-group>
+        <template v-slot:activator="{ props}">
+          <v-list-item
+            v-bind="props"
+            prepend-icon="mdi-progress-check"
+            :title="stateData[$route.query.state]?.title || 'State'"
+            rounded="e-pill"
+            :color="stateData[$route.query.state]?.color || ''"
+            :base-color="stateData[$route.query.state]?.color || ''"
+          />
+        </template>
+        <v-list-item
+          v-for="state in stateData.filter(s => s.value != $route.query.state)"
+          :key="state"
+          :title="state.title"
+          rounded="e-pill"
+          @click="router.push({ hash: $route.hash, query: { ...$route.query, state: state.value } })"
         />
       </v-list-group>
     </v-list>
@@ -102,6 +122,13 @@ const priorityData = [
   { color: 'success', title: 'Low', value: 0 },
   { color: 'warning', title: 'Medium', value: 1 },
   { color: 'error', title: 'High', value: 2 },
+  { color: '', title: 'Clear', value: undefined }
+]
+
+const stateData = [
+  { color: 'error', title: 'Not started', value: 0 },
+  { color: 'warning', title: 'In progress', value: 1 },
+  { color: 'success', title: 'Completed', value: 2 },
   { color: '', title: 'Clear', value: undefined }
 ]
 </script>
