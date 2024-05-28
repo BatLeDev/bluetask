@@ -102,7 +102,7 @@ const required = (v) => !!v || 'This field is required'
 const login = () => {
   signInWithEmailAndPassword(getAuth(), email.value, password.value)
     .then(() => {
-      router.push('/dashboard/#all')
+      router.push('/dashboard#all')
     })
     .catch((error) => {
       console.log(error.code)
@@ -142,7 +142,7 @@ const signInWithGoogle = async () => {
           createdAt: new Date()
         })
       }
-      router.push('/dashboard/#all')
+      router.push('/dashboard#all')
     })
     .catch((error) => {
       console.log(error)
@@ -153,7 +153,7 @@ const signInWithGoogle = async () => {
  * Redirect to dashboard if user is authenticated
  */
 const authListener = onAuthStateChanged(getAuth(), (user) => {
-  if (user) router.push('/dashboard/#all')
+  if (user) router.push('/dashboard#all')
 })
 
 /**

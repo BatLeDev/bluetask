@@ -130,7 +130,7 @@ const register = () => {
         labels: [],
         createdAt: new Date()
       })
-      router.push('/dashboard/#all')
+      router.push('/dashboard#all')
     })
     .catch((error) => {
       console.log(error.code)
@@ -162,7 +162,7 @@ const signInWithGoogle = () => {
         labels: [],
         createdAt: new Date()
       })
-      router.push('/dashboard/#all')
+      router.push('/dashboard#all')
     })
     .catch((error) => {
       console.log(error)
@@ -173,7 +173,7 @@ const signInWithGoogle = () => {
  * Redirect to dashboard if user is authenticated
  */
 const authListener = onAuthStateChanged(getAuth(), (user) => {
-  if (user) router.push('/dashboard/#all')
+  if (user) router.push('/dashboard#all')
 })
 
 /**

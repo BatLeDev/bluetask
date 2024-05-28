@@ -105,6 +105,14 @@
         />
       </v-list-group>
     </v-list>
+    <template v-slot:append>
+      <v-list-item
+        v-if="$route.path !== '/about'"
+        prepend-icon="mdi-help-circle-outline"
+        title="About Us"
+        href="/about"
+      />
+    </template>
   </v-navigation-drawer>
 </template>
 

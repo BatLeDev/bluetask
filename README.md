@@ -30,7 +30,8 @@ Choosing **Vuetify** for the CSS framework was a strategic decision because:
 - It supported my future career plans, as I aimed to secure a work-study program at the same company, necessitating proficiency in Vuetify.
 
 ## TODO
-- [ ] **Task Sorting:** Sort tasks by date, priority, or status.
+- [ ] **404 Page:** Create a custom 404 page.
+- [ ] **About Page:** Add an about page with project details.
 - [ ] **Long Tasks:** Support tasks with a lot of lines.
 - [ ] **Task Search:** Search tasks by name.
 - [ ] **Task Sharing:** Share tasks with other users.

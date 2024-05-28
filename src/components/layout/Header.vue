@@ -5,23 +5,23 @@
     class="pr-4"
   >
     <v-app-bar-nav-icon
-      v-if="isLogged"
+      v-if="$route.path == '/dashboard'"
       class="d-none d-lg-block"
       @click.stop="rail = !rail"
     />
     <v-img
-      :class="isLogged ? 'ml-2' : 'ml-8'"
+      :class="$route.path == '/dashboard' ? 'ml-2' : 'ml-8'"
       src="@/assets/logo.png"
       draggable="false"
       max-width="50"
       contain
-      @click="isLogged ? router.push('/dashboard/#all') : router.push('/')"
+      @click="isLogged ? router.push('/dashboard#all') : router.push('/')"
     />
     <v-app-bar-title
       text="BlueTask"
       class="text-lg-h5 font-weight-bold ml-2"
       style="user-select: none;"
-      @click="isLogged ? router.push('/dashboard/#all') : router.push('/')"
+      @click="isLogged ? router.push('/dashboard#all') : router.push('/')"
     />
 
     <v-btn
@@ -57,7 +57,7 @@
   </v-app-bar>
 
   <NavigationDrawer
-    v-if="isLogged"
+    v-if="$route.path == '/dashboard'"
     :rail
   />
 </template>

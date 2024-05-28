@@ -41,7 +41,7 @@ const router = useRouter()
  * Redirect to dashboard if user is authenticated
  */
 const authListener = onAuthStateChanged(getAuth(), (user) => {
-  if (user) router.push('/dashboard/#all')
+  if (user) router.push('/dashboard#all')
 })
 
 /**
