@@ -94,6 +94,7 @@ const filterLabel = computed(() => {
  * Query constraints for fetching tasks
  */
 const queryConstraints = computed(() => {
+  // Filters
   const constraints = [where('status', '==', filterStatus.value)]
   if (filterLabel.value) {
     constraints.push(where('labels', 'array-contains', filterLabel.value))
@@ -104,6 +105,12 @@ const queryConstraints = computed(() => {
   if (router.currentRoute.value.query.state !== undefined) {
     constraints.push(where('state', '==', parseInt(router.currentRoute.value.query.state)))
   }
+
+  // Order
+  if (router.currentRoute.value.query.order) {
+    constraints.push(orderBy(router.currentRoute.value.query.order, 'desc'))
+  }
+  constraints.push(orderBy('createAt', 'desc')) // Default Order
   return constraints
 })
 
@@ -114,8 +121,7 @@ const tasks = useCollection(() =>
   user.value
     ? query(
       collection(db, 'users', user.value.uid, 'tasks'),
-      ...queryConstraints.value,
-      orderBy('createAt', 'desc')
+      ...queryConstraints.value
     )
     : null,
 { ssrKey: 'task' }

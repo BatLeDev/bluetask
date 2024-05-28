@@ -46,14 +46,14 @@
       <!---- Filters/Order ---->
       <!-- Priority filter -->
       <v-list-group>
-        <template v-slot:activator="{ props}">
+        <template v-slot:activator="{ props }">
           <v-list-item
             v-bind="props"
-            prepend-icon="mdi-flag-outline"
-            :title="priorityData[$route.query.priority]?.title || 'Priority'"
-            rounded="e-pill"
-            :color="priorityData[$route.query.priority]?.color || ''"
             :base-color="priorityData[$route.query.priority]?.color || ''"
+            :color="priorityData[$route.query.priority]?.color || ''"
+            :title="priorityData[$route.query.priority]?.title || 'Priority'"
+            prepend-icon="mdi-flag-outline"
+            rounded="e-pill"
           />
         </template>
         <v-list-item
@@ -66,14 +66,14 @@
       </v-list-group>
       <!-- State filter -->
       <v-list-group>
-        <template v-slot:activator="{ props}">
+        <template v-slot:activator="{ props }">
           <v-list-item
             v-bind="props"
-            prepend-icon="mdi-progress-check"
-            :title="stateData[$route.query.state]?.title || 'State'"
-            rounded="e-pill"
-            :color="stateData[$route.query.state]?.color || ''"
             :base-color="stateData[$route.query.state]?.color || ''"
+            :color="stateData[$route.query.state]?.color || ''"
+            :title="stateData[$route.query.state]?.title || 'State'"
+            prepend-icon="mdi-progress-check"
+            rounded="e-pill"
           />
         </template>
         <v-list-item
@@ -82,6 +82,26 @@
           :title="state.title"
           rounded="e-pill"
           @click="router.push({ hash: $route.hash, query: { ...$route.query, state: state.value } })"
+        />
+      </v-list-group>
+      <!-- Order filter -->
+      <v-list-group>
+        <template v-slot:activator="{ props }">
+          <v-list-item
+            v-bind="props"
+            :base-color="$route.query.order ? 'primary' : ''"
+            :color="$route.query.order? 'primary' : ''"
+            :title="$route.query.order ? $route.query.order === 'startDate' ? 'Start date' : 'End date' : 'Order by'"
+            prepend-icon="mdi-sort"
+            rounded="e-pill"
+          />
+        </template>
+        <v-list-item
+          v-for="order in orderData.filter(o => o.value != $route.query.order)"
+          :key="order"
+          :title="order.title"
+          rounded="e-pill"
+          @click="router.push({ hash: $route.hash, query: { ...$route.query, order: order.value } })"
         />
       </v-list-group>
     </v-list>
@@ -125,6 +145,12 @@ const stateData = [
   { color: 'warning', title: 'In progress', value: 1 },
   { color: 'success', title: 'Completed', value: 2 },
   { color: '', title: 'Clear', value: undefined }
+]
+
+const orderData = [
+  { title: 'Start date', value: 'startDate' },
+  { title: 'End date', value: 'endDate' },
+  { title: 'Newest', value: undefined }
 ]
 </script>
 
