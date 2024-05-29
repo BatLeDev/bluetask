@@ -36,7 +36,6 @@ Choosing **Vuetify** for the CSS framework was a strategic decision because:
 
 ## TODO
 
-- [ ] **404 Page:** Create a custom 404 page.
 - [ ] **About Page:** Add an about page with project details.
 - [ ] **Long Tasks:** Support tasks with a lot of lines.
 - [ ] **Task Search:** Search tasks by name.

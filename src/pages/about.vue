@@ -100,7 +100,7 @@
                   ravi de vous lire !
                 </p>
                 <p class="text-center">
-                  <strong>Mail de contact :</strong>
+                  <strong>Mail de contact : </strong>
                   <a href="mailto:baptiste.guerny@gmail.com">baptiste.guerny@gmail.com</a>.
                 </p>
               </v-col>
