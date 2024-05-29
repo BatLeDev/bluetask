@@ -23,6 +23,11 @@
       style="user-select: none;"
       @click="isLogged ? router.push('/dashboard#all') : router.push('/')"
     />
+    <v-btn
+      class="mr-2"
+      icon="mdi-theme-light-dark"
+      @click="toggleTheme"
+    />
 
     <v-btn
       v-if="!isLogged && $router.currentRoute.value.path !== '/authentication/login'"
@@ -64,13 +69,14 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useDisplay } from 'vuetify'
+import { useDisplay, useTheme } from 'vuetify'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 
 let auth
 const router = useRouter()
 const display = useDisplay()
+const theme = useTheme()
 const isLogged = ref(false)
 const rail = ref(false)
 
@@ -87,6 +93,11 @@ onMounted(() => {
 const logout = () => {
   signOut(auth)
   router.push('/')
+}
+
+const toggleTheme = () => {
+  console.log(theme.global.current.value.dark)
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
 }
 
 </script>

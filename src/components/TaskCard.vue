@@ -1,7 +1,7 @@
 <template>
   <v-container class="d-flex align-center justify-center">
     <v-card
-      elevation="8"
+      elevation="4"
       width="100%"
       max-width="500"
       rounded="lg"
