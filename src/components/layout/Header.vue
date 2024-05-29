@@ -5,12 +5,12 @@
     class="pr-4"
   >
     <v-app-bar-nav-icon
-      v-if="$route.path == '/dashboard'"
+      v-if="isLogged && $route.path == '/dashboard'"
       class="d-none d-lg-block"
       @click.stop="rail = !rail"
     />
     <v-img
-      :class="$route.path == '/dashboard' ? 'ml-2' : 'ml-8'"
+      :class="isLogged && $route.path == '/dashboard' ? 'ml-2' : 'ml-8'"
       src="@/assets/logo.png"
       draggable="false"
       max-width="50"
@@ -57,7 +57,7 @@
   </v-app-bar>
 
   <NavigationDrawer
-    v-if="$route.path == '/dashboard'"
+    v-if="isLogged && $route.path == '/dashboard'"
     :rail
   />
 </template>
