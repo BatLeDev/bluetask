@@ -13,7 +13,7 @@
         v-if="showFullCard || task.title.trim() !== ''"
         v-model="task.title"
         auto-grow
-        class="font-weight-black"
+        class="font-weight-bold"
         density="compact"
         hide-details
         placeholder="Title"
@@ -261,6 +261,7 @@
               <v-date-picker
                 v-model="task.startDate"
                 show-adjacent-months
+                :max="task.endDate"
               />
             </v-menu>
           </v-btn>

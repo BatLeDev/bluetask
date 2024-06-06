@@ -10,10 +10,8 @@ const baseColors = {
   secondary: '#7dc3c0',
   accent: '#143d59',
   error: '#FF5252',
-  info: '#1E88E5',
   success: '#4CAF50',
-  warning: '#FF9800',
-  admin: '#E53935'
+  warning: '#FF9800'
 }
 
 const darkBaseColors = {

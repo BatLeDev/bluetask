@@ -14,7 +14,6 @@
 <style>
   /* Global styles */
   /* TODO: move style to styles/style.scss*/
-  /* TODO: use poppins font */
 
   /* v-icon has an opacity when it is prepended in a list of items.
     ref: https://github.com/vuetifyjs/vuetify/issues/18760
