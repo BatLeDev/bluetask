@@ -34,9 +34,12 @@ Choosing **Vuetify** for the CSS framework was a strategic decision because:
 - I had prior experience with Vuetify at [Koumoul](http://https://koumoul.com/), where I used it extensively.
 - It supported my future career plans, as I aimed to secure a work-study program at the same company, necessitating proficiency in Vuetify.
 
+## Mobile App
+
+For another course project, I developed a mobile android application. The app was a simplified version of BlueTask, focusing on task management and user authentication. You can find the project [here](https://github.com/BatLeDev/bluetask-android)
+
 ## TODO
 
-- [ ] **About Page:** Add an about page with project details.
 - [ ] **Long Tasks:** Support tasks with a lot of lines.
 - [ ] **Task Search:** Search tasks by name.
 - [ ] **Task Sharing:** Share tasks with other users.

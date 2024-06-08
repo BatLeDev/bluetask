@@ -24,6 +24,7 @@
       @click="isLogged ? router.push('/dashboard#all') : router.push('/')"
     />
     <v-btn
+      v-if="isLogged"
       class="mr-2"
       icon="mdi-theme-light-dark"
       @click="toggleTheme"
@@ -69,21 +70,33 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useFirestore } from 'vuefire'
 import { useDisplay, useTheme } from 'vuetify'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { collection, doc, getDoc, updateDoc } from 'firebase/firestore'
 
 let auth
 const router = useRouter()
 const display = useDisplay()
+const db = useFirestore()
 const theme = useTheme()
 const isLogged = ref(false)
 const rail = ref(false)
 
 onMounted(() => {
   auth = getAuth()
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     isLogged.value = user
+    if (user) {
+      // Fetch user theme from Firestore
+      const userDocRef = doc(collection(db, 'users'), user.uid)
+      const userDocSnap = await getDoc(userDocRef)
+      const userData = userDocSnap.data()
+      theme.global.name.value = userData.theme ? userData.theme : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    } else { // Use device theme
+      theme.global.name.value = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
   })
   if (display.mdAndDown) {
     rail.value = true
@@ -95,9 +108,9 @@ const logout = () => {
   router.push('/')
 }
 
-const toggleTheme = () => {
-  console.log(theme.global.current.value.dark)
+const toggleTheme = async () => {
   theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+  await updateDoc(doc(collection(db, 'users'), auth.currentUser.uid), { theme: theme.global.current.value.dark ? 'dark' : 'light' })
 }
 
 </script>

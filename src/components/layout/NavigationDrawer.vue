@@ -109,7 +109,7 @@
       <v-list-item
         v-if="$route.path !== '/about'"
         prepend-icon="mdi-help-circle-outline"
-        title="About Us"
+        title="About us"
         href="/about"
       />
     </template>

@@ -128,7 +128,8 @@ const register = () => {
       await setDoc(doc(db, 'users', currentUser.uid), {
         email: currentUser.email,
         labels: [],
-        createdAt: new Date()
+        createdAt: new Date(),
+        theme: 'dark'
       })
       router.push('/dashboard#all')
     })
@@ -160,7 +161,8 @@ const signInWithGoogle = () => {
       await setDoc(doc(db, 'users', currentUser.uid), {
         email: currentUser.email,
         labels: [],
-        createdAt: new Date()
+        createdAt: new Date(),
+        theme: 'dark'
       })
       router.push('/dashboard#all')
     })

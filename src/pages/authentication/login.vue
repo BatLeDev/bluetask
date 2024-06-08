@@ -139,7 +139,8 @@ const signInWithGoogle = async () => {
         await setDoc(docRef, {
           email: currentUser.email,
           labels: [],
-          createdAt: new Date()
+          createdAt: new Date(),
+          theme: 'dark'
         })
       }
       router.push('/dashboard#all')
