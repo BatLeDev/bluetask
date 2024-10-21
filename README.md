@@ -6,7 +6,7 @@
 
 </div>
 
-[BlueTask](bluetask.batledev.com) is a powerful task management application designed to help you organize and keep track of your tasks efficiently. With a user-friendly interface, BlueTask ensures you never forget an important task.
+[BlueTask](https://bluetask.batledev.com) is a powerful task management application designed to help you organize and keep track of your tasks efficiently. With a user-friendly interface, BlueTask ensures you never forget an important task.
 
 ## Features
 
@@ -31,7 +31,7 @@ I decided to expand on this project to gain more experience in web development, 
 
 Choosing **Vuetify** for the CSS framework was a strategic decision because:
 
-- I had prior experience with Vuetify at [Koumoul](http://https://koumoul.com/), where I used it extensively.
+- I had prior experience with Vuetify at [Koumoul](https://koumoul.com/), where I used it extensively.
 - It supported my future career plans, as I aimed to secure a work-study program at the same company, necessitating proficiency in Vuetify.
 
 ## Mobile App
